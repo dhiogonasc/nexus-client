@@ -10,7 +10,7 @@ api.interceptors.request.use(
   async (config) => {
     const token = await storage.getToken();
 
-    // Se tiver token e a rota NÃO for de autenticação (ex: login/cadastro), ele envia o token
+
     if (token && !config.url?.includes("/auth/")) {
       config.headers.Authorization = `Bearer ${token}`;
     }

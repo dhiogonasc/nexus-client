@@ -1,31 +1,99 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Text,
   View,
   TouchableOpacity,
   ImageBackground,
   Animated,
+  ActivityIndicator,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import { CarouselStyles as S } from '@/styles/CarouselStyle';
 import { router } from 'expo-router';
-import { PLANETAS } from '@/data/planetas'; 
 
+import { PLANETAS } from '@/data/planetas'; 
+import api from '@/services/api'; 
 
 export default function PlanetCarousel() {
+  const [planetas, setPlanetas] = useState<any[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState<string | null>(null);
+
   const [index, setIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const userCurrentPlanetId = '2';
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const opacityAnim = useRef(new Animated.Value(1)).current;
   const translateXAnim = useRef(new Animated.Value(0)).current;
 
-  const planeta = PLANETAS[index];
+  useEffect(() => {
+    const buscarPlanetas = async () => {
+      try {
+        const response = await api.get('/planets'); // Ajuste a rota se necessário (ex: /me/progress)
+        
+        const listaDePlanetasDaApi = response.data.tasks || [];
 
+        const planetasFormatados = listaDePlanetasDaApi.map((planetaApi: any) => {
+          const recursos = PLANETAS[planetaApi.id.toString()];
+          
+          return {
+            ...planetaApi,
+            id: planetaApi.id.toString(),
+            name: planetaApi.name || planetaApi.nome,
+            description: planetaApi.description || planetaApi.descricao,
+            imagem: recursos?.imagem || require('../../assets/FundoPlanets.png'),
+            accentColor: recursos?.accentColor || '#3B82F6',
+          };
+        });
 
+        setPlanetas(planetasFormatados);
+
+        // ✅ LÓGICA DO ISCURRENT: Procura qual planeta tem isCurrent = true
+        const planetaAtualIndex = planetasFormatados.findIndex((p: any) => p.execution?.isCurrent === true);
+        
+        // Se encontrar, faz o carrossel iniciar nele!
+        if (planetaAtualIndex !== -1) {
+          setIndex(planetaAtualIndex);
+        }
+
+      } catch (error) {
+        console.error("Erro ao buscar planetas:", error);
+        setErro("Não foi possível carregar o mapa estelar.");
+      } finally {
+        setCarregando(false);
+      }
+    };
+
+    buscarPlanetas();
+  }, []);
+
+  if (carregando) {
+    return (
+      <View style={[S.wrapper, { justifyContent: 'center', alignItems: 'center', backgroundColor: '#020617' }]}>
+        <ActivityIndicator size="large" color="#3B82F6" />
+        <Text style={{ color: '#fff', marginTop: 10 }}>Mapeando galáxia...</Text>
+      </View>
+    );
+  }
+
+  if (erro || planetas.length === 0) {
+    return (
+      <View style={[S.wrapper, { justifyContent: 'center', alignItems: 'center', backgroundColor: '#020617' }]}>
+        <Text style={{ color: '#ef4444', marginBottom: 20 }}>{erro || "Nenhum planeta encontrado."}</Text>
+        <TouchableOpacity style={S.navButton} onPress={() => router.back()}>
+          <Text style={{ color: '#fff' }}>Voltar</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  const planeta = planetas[index];
+  
+  // ✅ LÓGICA DE BLOQUEIO: Verifica se o status é LOCKED
+  const isLocked = planeta.execution?.status === 'LOCKED';
+  const displayColor = isLocked ? '#475569' : planeta.accentColor; // Fica cinza se estiver bloqueado
 
   const navegar = (alvo: 'ant' | 'prox' | number) => {
     if (isAnimating) return;
@@ -39,8 +107,8 @@ export default function PlanetCarousel() {
       direcaoAnimacao = alvo > index ? -1 : 1;
     } else {
       proximoIndex = alvo === 'prox'
-        ? (index + 1) % PLANETAS.length
-        : (index - 1 + PLANETAS.length) % PLANETAS.length;
+        ? (index + 1) % planetas.length
+        : (index - 1 + planetas.length) % planetas.length;
       direcaoAnimacao = alvo === 'prox' ? -1 : 1;
     }
 
@@ -76,10 +144,8 @@ export default function PlanetCarousel() {
           style={S.galaxyOverlay}
         />
 
-        {/* Orbit ring decorativo */}
-        <View style={[S.orbitRing, { borderColor: planeta.accentColor + '25' }]} />
+        <View style={[S.orbitRing, { borderColor: displayColor + '25' }]} />
 
-        {/* Planeta animado */}
         <Animated.View
           style={[
             S.planetContainer,
@@ -91,45 +157,41 @@ export default function PlanetCarousel() {
         >
           <ImageBackground
             source={planeta.imagem}
-            style={S.planetImage}
+            // ✅ FILTRO CINZA/OPACO SE BLOQUEADO
+            style={[S.planetImage, isLocked && { opacity: 0.25, tintColor: 'gray' }]}
             resizeMode="contain"
           />
+          
+          {/* ✅ Ícone de cadeado gigante no meio do planeta bloqueado */}
+          {isLocked && (
+            <View style={{ position: 'absolute', top: '40%', alignSelf: 'center' }}>
+              <MaterialCommunityIcons name="lock" size={60} color="rgba(255,255,255,0.3)" />
+            </View>
+          )}
         </Animated.View>
 
-        {/* Controles de navegação */}
         <View style={S.controls}>
-          <TouchableOpacity
-            onPress={() => navegar('ant')}
-            style={S.navButton}
-            activeOpacity={0.7}
-            accessibilityLabel="Planeta anterior"
-          >
+          {/* ... (Controles de navegação mantidos iguais) ... */}
+          <TouchableOpacity onPress={() => navegar('ant')} style={S.navButton}>
             <BlurView intensity={30} tint="dark" style={S.navBlur}>
               <MaterialCommunityIcons name="chevron-left" size={28} color="#CBD5E1" />
             </BlurView>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => navegar('prox')}
-            style={S.navButton}
-            activeOpacity={0.7}
-            accessibilityLabel="Próximo planeta"
-          >
+          <TouchableOpacity onPress={() => navegar('prox')} style={S.navButton}>
             <BlurView intensity={30} tint="dark" style={S.navBlur}>
               <MaterialCommunityIcons name="chevron-right" size={28} color="#CBD5E1" />
             </BlurView>
           </TouchableOpacity>
         </View>
 
-        {/* Info card do planeta */}
         <Animated.View style={[S.infoCard, { opacity: opacityAnim }]}>
           <BlurView intensity={40} tint="dark" style={S.infoBlur}>
 
-            
-            <View style={[S.accentLine, { backgroundColor: planeta.accentColor }]} />
+            <View style={[S.accentLine, { backgroundColor: displayColor }]} />
 
-            {/* Visualização da posição do usuário */}
-            {planeta.id === userCurrentPlanetId && (
+            {/* ✅ SUBSTITUIÇÃO AQUI: Verifica isCurrent em vez do ID manual */}
+            {planeta.execution?.isCurrent && (
               <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
                 <MaterialCommunityIcons name="map-marker" size={14} color={planeta.accentColor} />
                 <Text style={{ 
@@ -145,7 +207,8 @@ export default function PlanetCarousel() {
               </View>
             )}
 
-            <Text style={S.planetName}>{planeta.nome}</Text>
+            <Text style={[S.planetName, isLocked && { color: '#94A3B8' }]}>{planeta.name}</Text>
+            
             <View style={S.infoRow}>
               <View style={S.infoPill}>
                 <MaterialCommunityIcons name="atom" size={12} color="#94A3B8" />
@@ -156,44 +219,41 @@ export default function PlanetCarousel() {
           </BlurView>
         </Animated.View>
 
-        {/* Indicador de posição */}
         <View style={S.dots}>
-          {PLANETAS.map((_, i) => (
-            <TouchableOpacity key={i} onPress={() => {
-              if (i !== index) navegar(i); // Agora salta diretamente para o índice correto
-            }}>
+          {planetas.map((p, i) => (
+            <TouchableOpacity key={i} onPress={() => { if (i !== index) navegar(i); }}>
               <View
                 style={[
                   S.dot,
-                  i === index && { backgroundColor: planeta.accentColor, width: 20 },
+                  i === index && { backgroundColor: p.execution?.status === 'LOCKED' ? '#475569' : p.accentColor, width: 20 },
                 ]}
               />
             </TouchableOpacity>
           ))}
-
-
         </View>
       </ImageBackground>
 
-          <TouchableOpacity 
-              style={{ 
-                backgroundColor: planeta.accentColor, 
-                padding: 7,
-                paddingLeft: 25,
-                paddingRight: 25, 
-                borderRadius: 8, 
-                marginTop: 15,
-                marginBottom: 25,
-                alignItems: 'center',
-                marginLeft: 'auto',
-                marginRight: 'auto',
-              }}
-              onPress={() => router.push(`/planet/${planeta.id}`)} // <- NAVEGAÇÃO AQUI
-            >
-              <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-                Explorar {planeta.nome}
-              </Text>
-            </TouchableOpacity>
+      {/* ✅ BOTÃO ALTERADO: Muda cor, texto e desabilita o clique se bloqueado */}
+      <TouchableOpacity 
+        style={{ 
+          backgroundColor: displayColor, 
+          padding: 7,
+          paddingLeft: 25,
+          paddingRight: 25, 
+          borderRadius: 8, 
+          marginTop: 15,
+          marginBottom: 25,
+          alignItems: 'center',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+        }}
+        disabled={isLocked}
+        onPress={() => router.push(`/planet/${planeta.id}`)} 
+      >
+        <Text style={{ color: isLocked ? '#94A3B8' : '#fff', fontWeight: 'bold' }}>
+          {isLocked ? "Complete o planeta anterior" : `Explorar ${planeta.name}`}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }

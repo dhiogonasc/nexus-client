@@ -23,7 +23,7 @@ export default function TesteEndpoints() {
   const [carregando, setCarregando] = useState<boolean>(false);
 
   // =========================================================================
-  // ✅ VALORES ATUALIZADOS COM BASE NO BRUNO
+  // VALORES ATUALIZADOS COM BASE NO BRUNO
   // =========================================================================
   const mockRegistro = { 
     username: "username2", 

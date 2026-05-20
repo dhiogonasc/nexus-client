@@ -1,36 +1,63 @@
-import React, { useState } from 'react';
-import { View, StyleProp, TextInput, ViewStyle, StyleSheet, TextInputProps, TouchableOpacity } from 'react-native';
+import React from 'react';
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  TextInputProps,
+  StyleSheet,
+} from 'react-native';
+
 import { Feather } from '@expo/vector-icons';
 
-interface PasswordInputProps extends
-  TextInputProps {
+interface PasswordInputProps extends TextInputProps {
   iconName?: keyof typeof Feather.glyphMap;
-  containerStyle?: StyleProp<ViewStyle>;
+  placeholder: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  secureTextEntry: boolean;
+  onTogglePassword: () => void;
 }
 
-export default function PasswordInput(
-  {
-    iconName,
-    containerStyle,
-    style,
-    ...rest
-  }: PasswordInputProps) {
-
-  const [showPassword, setShowPassword] = useState(false);
-
+export default function PasswordInput({
+  iconName = 'lock',
+  placeholder,
+  value,
+  onChangeText,
+  secureTextEntry,
+  onTogglePassword,
+  ...rest
+}: PasswordInputProps) {
   return (
-    <View style={[styles.inputContainer, containerStyle]}>
-      {iconName && (
-        <Feather name={iconName} size={20} color="#C4C4C4" style={styles.icon} />
-      )}
+    <View style={styles.inputContainer}>
+      <Feather
+        name={iconName}
+        size={22}
+        color="#C4C4C4"
+        style={styles.leftIcon}
+      />
 
       <TextInput
-        style={[styles.textInput, style]}
-        placeholderTextColor="#C4C4C4"
+        style={styles.input}
+        placeholder={placeholder}
+        placeholderTextColor="#888888"
+        value={value}
+        onChangeText={onChangeText}
+        secureTextEntry={secureTextEntry}
+        autoCapitalize="none"
+        autoCorrect={false}
         {...rest}
       />
-      <TouchableOpacity style={styles.eyeIcon} onPress={() => setShowPassword(!showPassword)}>
-        <Feather name={showPassword ? 'eye-off' : 'eye'} size={24} color="#888" />
+
+      <TouchableOpacity
+        onPress={onTogglePassword}
+        activeOpacity={0.7}
+        style={styles.eyeButton}
+      >
+        <Feather
+          name={secureTextEntry ? 'eye' : 'eye-off'}
+          size={30}
+          color="#C4C4C4"
+        />
       </TouchableOpacity>
     </View>
   );
@@ -38,27 +65,34 @@ export default function PasswordInput(
 
 const styles = StyleSheet.create({
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     backgroundColor: '#2B2B2B',
     width: '100%',
     height: 55,
     borderRadius: 8,
+    paddingHorizontal: 15,
+    marginBottom: 25,
     borderWidth: 1,
     borderColor: '#C4C4C4',
-    marginBottom: 15,
-    paddingHorizontal: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  icon: {
-    marginRight: 10,
+
+  leftIcon: {
+    marginRight: 12,
   },
-  textInput: {
+
+  input: {
     flex: 1,
     height: '100%',
     color: '#FFFFFF',
     fontSize: 16,
+    paddingVertical: 0,
   },
-  eyeIcon: {
-    padding: 10,
+
+  eyeButton: {
+    height: '100%',
+    paddingLeft: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

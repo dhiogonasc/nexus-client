@@ -107,7 +107,6 @@ export const CarouselStyles = StyleSheet.create({
     marginBottom: 8,
   },
   infoRow: {
-    flexDirection: 'row',
     gap: 8,
   },
   infoPill: {

@@ -9,13 +9,11 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   Alert,
-  ActivityIndicator, // Adicionado para o Loading
+  ActivityIndicator, 
 } from 'react-native';
 import { AccountStyles as S } from '@/styles/AccountStyles';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Link } from 'expo-router';
 
-// ⚠️ Adicione o import da sua API configurada
 import api from '@/services/api'; 
 
 interface UserData {
@@ -28,26 +26,16 @@ interface UserData {
   createdAt: string;
 }
 
-export function ProfileScreen() {
-  // Substituir o mock pelos dados reais do usuário no futuro
-}
-
 export default function Account() {
-  // --- NOVOS ESTADOS ---
-  // Começa como 'null' porque não temos os dados até a API responder
   const [user, setUser] = useState<UserData | null>(null); 
-  const [loading, setLoading] = useState<boolean>(true); // Controla a bolinha de carregamento
+  const [loading, setLoading] = useState<boolean>(true); 
 
   // --- BUSCANDO OS DADOS NA API ---
   useEffect(() => {
     async function loadProfile() {
       try {
-        // Puxa os dados do seu amigo. O Token já vai automaticamente pelo api.ts!
         const response = await api.get('/me');
         
-        // ⚠️ ATENÇÃO AQUI: 
-        // Adapte os nomes abaixo (response.data...) para o que o backend realmente devolve
-        // Exemplo: se no back for "username", use response.data.username
         const dadosMapeados: UserData = {
           id: response.data.id || 'N/A',
           name: response.data.username || response.data.name || 'Jogador', 
@@ -55,8 +43,6 @@ export default function Account() {
           xp: response.data.xp || 0,
           level: response.data.level || 1,
           levelName: response.data.levelName || 'Iniciante',
-          // O backend costuma devolver datas num formato feio (ex: 2026-05-01T00:00). 
-          // Mais tarde podemos formatar isso, por agora pegamos direto.
           createdAt: response.data.createdAt || 'Desconhecido', 
         };
 
@@ -65,12 +51,12 @@ export default function Account() {
         console.error("Erro ao buscar perfil:", error);
         Alert.alert("Ops!", "Não foi possível carregar os dados do seu perfil.");
       } finally {
-        setLoading(false); // Para a bolinha de carregar, dando sucesso ou erro
+        setLoading(false);
       }
     }
 
     loadProfile();
-  }, []); // Essa array vazia [] garante que rode apenas 1 vez ao abrir a tela
+  }, []);
 
   const handleUpdatePassword = () => {
     Alert.alert("Tudo certo!", "O botão tá funcionando.");
@@ -89,10 +75,9 @@ export default function Account() {
       >
         <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
-        {/* ── Imagem de Topo (Banner) ── */}
         <View style={S.imageContainer}>
           <Image
-            source={require('../assets/LoginImg.jpg')} // Ajuste o path
+            source={require('../assets/LoginImg.jpg')} 
             style={S.topImage}
             resizeMode="cover"
           />
@@ -102,24 +87,23 @@ export default function Account() {
           />
         </View>
 
-        {/* ── Conteúdo do Perfil Centralizado ── */}
         <View style={S.contentWrapper}>
           <Text style={S.title}>Seu perfil:</Text>
 
           <View style={S.profileContainer}>
-            {/* --- SE ESTIVER CARREGANDO, MOSTRA A BOLINHA --- */}
+
             {loading ? (
               <View style={{ padding: 40, alignItems: 'center' }}>
                 <ActivityIndicator size="large" color="#ffffff" />
                 <Text style={{ color: '#fff', marginTop: 10 }}>Carregando seus dados...</Text>
               </View>
             ) : !user ? (
-              /* --- SE DEU ERRO E NÃO TEM USUÁRIO, MOSTRA MSG --- */
+
               <Text style={{ color: '#ff4444', textAlign: 'center', padding: 20 }}>
                 Erro ao carregar informações. Faça login novamente.
               </Text>
             ) : (
-              /* --- SE DEU TUDO CERTO, MOSTRA OS DADOS REAIS --- */
+
               <>
                 <View style={S.accountInfo}>
                   <Text style={S.label}>NOME</Text>
@@ -154,10 +138,6 @@ export default function Account() {
                 >
                   <Text style={S.buttonText}>Atualizar Senha</Text>
                 </TouchableOpacity>
-
-                <Link href="/teste" style={[S.button, { width: 200, textAlign: 'center' }]}>
-                  TESTE
-                </Link>
               </>
             )}
           </View>

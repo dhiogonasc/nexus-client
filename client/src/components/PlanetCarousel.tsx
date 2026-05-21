@@ -355,12 +355,13 @@ export default function PlanetCarousel() {
         </View>
       </ImageBackground>
 
+      {/* Botão de explorar ou mensagem de bloqueio */}
       <TouchableOpacity
         style={{
           backgroundColor: displayColor,
-          padding: 7,
-          paddingLeft: 25,
-          paddingRight: 25,
+          padding: 12,
+          paddingLeft: 35,
+          paddingRight: 35,
           borderRadius: 8,
           marginTop: 15,
           marginBottom: 25,

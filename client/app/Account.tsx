@@ -101,11 +101,6 @@ export default function Account() {
     loadProfile();
   }, []);
 
-  const handleUpdatePassword = () => {
-    Alert.alert('Tudo certo!', 'O botão está funcionando.');
-    console.log('Função para atualizar a senha do usuário');
-  };
-
   const levelText = useMemo(() => {
     if (!user) {
       return 'Nível Interplanetário';
@@ -254,28 +249,6 @@ export default function Account() {
                     }}
                   >
                     <MaterialCommunityIcons
-                      name="weather-windy"
-                      size={20}
-                      color="#FFFFFF"
-                      style={{ marginRight: 10 }}
-                    />
-
-                    <Text style={S.label}>OXIGÊNIO</Text>
-                  </View>
-
-                  <Text style={S.value}>{user.oxygen}/10</Text>
-                  <View style={S.line} />
-                </View>
-
-                <View style={S.accountInfo}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignSelf: 'flex-start',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <MaterialCommunityIcons
                       name="medal-outline"
                       size={20}
                       color="#FFFFFF"
@@ -346,13 +319,6 @@ export default function Account() {
                   <View style={S.line} />
                 </View>
 
-                <TouchableOpacity
-                  style={S.button}
-                  onPress={handleUpdatePassword}
-                  activeOpacity={0.8}
-                >
-                  <Text style={S.buttonText}>Atualizar Senha</Text>
-                </TouchableOpacity>
               </>
             )}
           </View>

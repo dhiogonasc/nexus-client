@@ -1,0 +1,299 @@
+{
+  "info": {
+    "_postman_id": "3e52e11a-136a-4f87-88c3-c05ea79d921d",
+    "name": "Nexus RPG API",
+    "description": "Coleção organizada para o desenvolvimento do Nexus RPG, com herança de autenticação e scripts de automação.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52573108",
+    "_collection_link": "https://go.postman.co/collection/52573108-3e52e11a-136a-4f87-88c3-c05ea79d921d?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "01. Autenticação",
+      "item": [
+        {
+          "name": "Cadastrar Novo Usuário",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"Dhiogo\",\n    \"email\": \"dhiogo@exemplo.com\",\n    \"password\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.token) {",
+                  "    pm.environment.set(\"token\", response.token);",
+                  "    console.log(\"Token atualizado com sucesso!\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"dhiogo@exemplo.com\",\n    \"password\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02. Planetas",
+      "item": [
+        {
+          "name": "Listar Planetas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/planets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "planets"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detalhes do Planeta",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/planets/{{planetId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "planets",
+                "{{planetId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{token}}",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "03. Missões",
+      "item": [
+        {
+          "name": "Listar Missões (Paginado)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/missions?planetId={{planetId}}&page=0&size=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "missions"
+              ],
+              "query": [
+                {
+                  "key": "planetId",
+                  "value": "{{planetId}}"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detalhes da Missão",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/missions/{{missionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "missions",
+                "{{missionId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{token}}",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "04. Recursos",
+      "item": [
+        {
+          "name": "Listar Recursos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/planets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "planets"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detalhes do Recurso",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/planets/{{planetId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "planets",
+                "{{planetId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{token}}",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "05. Usuário",
+      "item": [
+        {
+          "name": "Meu Perfil",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "me"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{token}}",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "planetId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "missionId",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}

@@ -1,7 +1,0 @@
-info:
-  name: Tentativas
-  type: folder
-  seq: 2
-
-request:
-  auth: inherit

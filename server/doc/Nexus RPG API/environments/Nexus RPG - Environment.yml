@@ -1,8 +1,0 @@
-name: Nexus RPG - Environment
-variables:
-  - name: server.url
-    value: http://localhost:8080
-  - secret: true
-    name: access.token
-  - name: mission.id
-    value: "1"

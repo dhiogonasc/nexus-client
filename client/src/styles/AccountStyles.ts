@@ -1,5 +1,6 @@
 import { StyleSheet, Platform } from 'react-native';
 
+
 // Largura máxima para os dados do perfil não ficarem gigantes no PC
 const MAX_CONTENT_WIDTH = 1200; 
 
@@ -61,7 +62,7 @@ export const AccountStyles = StyleSheet.create({
   },
   label: {
     fontSize: 18,
-    fontWeight: '600',
+    fontFamily: 'ArchivoBlack_400Regular',
     color: '#FFFFFF',
     marginBottom: 8,
   },

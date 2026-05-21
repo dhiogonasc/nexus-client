@@ -1,16 +1,34 @@
-import { Stack, usePathname } from 'expo-router';
-import { View } from 'react-native';
-import FooterBar from '../src/components/FooterBar';
 import React from 'react';
+import { Stack, usePathname } from 'expo-router';
+import { View, ActivityIndicator } from 'react-native';
+import { useFonts, ArchivoBlack_400Regular } from '@expo-google-fonts/archivo-black';
+
+import FooterBar from '../src/components/FooterBar';
 
 export default function Layout() {
-  // Pega o caminho (rota) atual que o usuário está acessando
   const pathname = usePathname();
 
-  // Define em quais rotas o Footer NÃO deve aparecer
+  const [fontsLoaded] = useFonts({
+    ArchivoBlack_400Regular,
+  });
+
+  if (!fontsLoaded) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#000000',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <ActivityIndicator color="#FFFFFF" />
+      </View>
+    );
+  }
+
   const rotasSemFooter = ['/', '/register', '/logout'];
 
-  // Se a rota atual NÃO estiver na lista acima, deve mostrar o Footer
   const deveMostrarFooter = !rotasSemFooter.includes(pathname);
 
   return (

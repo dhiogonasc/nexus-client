@@ -7,7 +7,6 @@ import {
   StatusBar,
   ScrollView,
   KeyboardAvoidingView,
-  TouchableOpacity,
   Alert,
   ActivityIndicator,
 } from 'react-native';
@@ -23,7 +22,6 @@ interface UserData {
   name: string;
   email: string;
   xp: number;
-  oxygen: number;
   level: number;
   levelName: string;
   levelDescription: string;
@@ -38,8 +36,7 @@ function formatLevelName(levelName: string) {
 
   return levelName
     .replace(/_/g, ' ')
-    .toLowerCase()
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+    .toUpperCase()
 }
 
 export default function Account() {
@@ -65,8 +62,6 @@ export default function Account() {
         name: data.username || data.name || 'Jogador',
         email: data.email || 'sem-email',
         xp: Number(data.xp || 0),
-        oxygen: Number(data.oxygen || 0),
-
         level: Number(level?.id || 1),
         levelName: String(level?.name || 'ALUMINIUM_I'),
         levelDescription: String(level?.description || 'Nível inicial'),

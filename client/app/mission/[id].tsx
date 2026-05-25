@@ -7,6 +7,7 @@ import { useMissionFlow } from './hooks/useMissionFlow';
 import MissionStateScreen from './components/MissionStateScreen';
 import MissionQuestion from './components/MissionQuestion';
 import MissionResult from './components/MissionResult';
+import MissionIntro from './components/MissionIntro';
 
 export default function MissionPage() {
   const router = useRouter();
@@ -37,8 +38,10 @@ export default function MissionPage() {
       <MissionResult
         finishResult={missionFlow.finishResult}
         accentColor={missionFlow.accentColor}
+        hasNextMission={!!missionFlow.nextMissionId}
         onRetry={missionFlow.reiniciarMissao}
         onBack={missionFlow.voltarParaPlaneta}
+        onNextMission={missionFlow.irParaProximaMissao}
       />
     );
   }
@@ -60,6 +63,21 @@ export default function MissionPage() {
         accentColor={missionFlow.accentColor}
         message="Esta missão ainda não possui perguntas cadastradas."
         onBack={missionFlow.voltarParaPlaneta}
+      />
+    );
+  }
+
+  if (missionFlow.showIntro) {
+    return (
+      <MissionIntro
+        planetId={planetId}
+        planetName={missionFlow.planetName}
+        missionTitle={missionFlow.missionTitle}
+        introText={missionFlow.introText}
+        questionsLength={missionFlow.questions.length}
+        xpBonus={missionFlow.mission?.xpBonus || missionFlow.mission?.xp_bonus}
+        onBack={missionFlow.voltarParaPlaneta}
+        onStart={missionFlow.iniciarQuestoes}
       />
     );
   }

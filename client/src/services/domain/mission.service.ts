@@ -16,8 +16,10 @@ export interface MissionDetail {
   id: number;
   name?: string;
   title?: string;
+  description?: string;
   content?: string;
   xpBonus?: number;
+  xp_bonus?: number;
   bestResult?: number;
   planet?: {
     id: number;

@@ -19,15 +19,19 @@ import MissionHeader from './MissionHeader';
 type Props = {
   finishResult: AttemptFinishResponse;
   accentColor: string;
+  hasNextMission: boolean;
   onRetry: () => void;
   onBack: () => void;
+  onNextMission: () => void;
 };
 
 export default function MissionResult({
   finishResult,
   accentColor,
+  hasNextMission,
   onRetry,
   onBack,
+  onNextMission,
 }: Props) {
   const totalAnswers = finishResult?.answers?.length || 0;
 
@@ -195,6 +199,23 @@ export default function MissionResult({
             >
               <Text style={[styles.confirmButtonText, { color: '#020617' }]}>
                 Tentar novamente
+              </Text>
+            </TouchableOpacity>
+          )}
+
+          {acertouTudo && hasNextMission && (
+            <TouchableOpacity
+              style={[
+                styles.confirmButton,
+                {
+                  backgroundColor: '#22c55e',
+                  marginTop: 16,
+                },
+              ]}
+              onPress={onNextMission}
+            >
+              <Text style={styles.confirmButtonText}>
+                Próxima missão
               </Text>
             </TouchableOpacity>
           )}

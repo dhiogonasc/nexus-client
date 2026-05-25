@@ -74,7 +74,7 @@ export function usePlanetDetails({
   }, [missions]);
 
   function voltar() {
-    router.back();
+    router.replace('/homePage');
   }
 
   function abrirMissao(missao: MissionTask) {

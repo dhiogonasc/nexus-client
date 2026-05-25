@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import api from '@/services/api';
+
 import missionService, {
   AttemptAnswerRequest,
   AttemptFinishResponse,
@@ -30,6 +32,9 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
   const [finishing, setFinishing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  const [showIntro, setShowIntro] = useState(true);
+  const [nextMissionId, setNextMissionId] = useState<string | null>(null);
+
   const [finishResult, setFinishResult] = useState<AttemptFinishResponse | null>(
     null,
   );
@@ -46,6 +51,14 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
 
   const planetName = useMemo(() => {
     return mission?.planet?.name || 'Planeta';
+  }, [mission]);
+
+  const introText = useMemo(() => {
+    return (
+      mission?.content ||
+      mission?.description ||
+      'Prepare-se para iniciar esta missão. Leia com atenção cada pergunta e escolha a melhor alternativa.'
+    );
   }, [mission]);
 
   const progressText = useMemo(() => {
@@ -69,6 +82,48 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
     router.back();
   }
 
+  async function buscarProximaMissao() {
+    try {
+      if (!id || !planetId) {
+        setNextMissionId(null);
+        return;
+      }
+
+      const response = await api.get(`/planets/${planetId}`);
+      const missions = response.data?.missions?.tasks || [];
+
+      const currentIndex = missions.findIndex(
+        (item: any) => String(item.id) === String(id),
+      );
+
+      const nextMission = missions[currentIndex + 1];
+
+      if (nextMission?.id) {
+        setNextMissionId(String(nextMission.id));
+      } else {
+        setNextMissionId(null);
+      }
+    } catch (error) {
+      console.log('Erro ao buscar próxima missão:', error);
+      setNextMissionId(null);
+    }
+  }
+
+  function irParaProximaMissao() {
+    if (!nextMissionId || !planetId) {
+      voltarParaPlaneta();
+      return;
+    }
+
+    router.replace({
+      pathname: '/mission/[id]',
+      params: {
+        id: nextMissionId,
+        planetId: String(planetId),
+      },
+    });
+  }
+
   async function carregarMissao() {
     try {
       if (!id) {
@@ -83,6 +138,8 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
       setAnswers([]);
       setOpcaoSelecionada(null);
       setCurrentQuestionIndex(0);
+      setShowIntro(true);
+      setNextMissionId(null);
 
       const missionData = await missionService.getById(id);
 
@@ -92,6 +149,8 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
 
       setMission(missionData);
       setQuestions(orderedQuestions);
+
+      await buscarProximaMissao();
     } catch (error: any) {
       const status = error?.response?.status;
 
@@ -114,6 +173,10 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
   useEffect(() => {
     carregarMissao();
   }, [id]);
+
+  function iniciarQuestoes() {
+    setShowIntro(false);
+  }
 
   function selecionarAlternativa(index: number) {
     if (finishing || finishResult) return;
@@ -193,6 +256,8 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
       );
 
       setFinishResult(result);
+
+      await buscarProximaMissao();
     } catch (error: any) {
       const status = error?.response?.status;
 
@@ -236,13 +301,18 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
     finishing,
     errorMessage,
     finishResult,
+    showIntro,
+    nextMissionId,
     accentColor,
     missionTitle,
     planetName,
+    introText,
     progressText,
+    iniciarQuestoes,
     selecionarAlternativa,
     confirmarResposta,
     reiniciarMissao,
     voltarParaPlaneta,
+    irParaProximaMissao,
   };
 }

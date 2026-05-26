@@ -1,13 +1,15 @@
-import { PlanetDetail, TaskPayload } from "@/models";
+import { TaskPayload } from "@/models/task";
 import api from "./api";
-import { Task } from "react-native";
+import { PlanetDetail } from "@/models/planet";
 
-export const getAll = async (): Promise<TaskPayload> => {
-  const request = await api.get<TaskPayload>("/planets");
-  return request.data;
-};
+export const planetService = {
+  getAll: async (): Promise<TaskPayload> => {
+    const request = await api.get<TaskPayload>("/planets");
+    return request.data;
+  },
 
-export const getById = async (id: number): Promise<PlanetDetail> => {
-  const request = await api.get<PlanetDetail>(`/planets/${id}`);
-  return request.data;
+  getById: async (id: number): Promise<PlanetDetail> => {
+    const request = await api.get<PlanetDetail>(`/planets/${id}`);
+    return request.data;
+  },
 };

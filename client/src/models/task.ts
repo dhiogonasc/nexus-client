@@ -22,21 +22,3 @@ export interface TaskPayload {
   tasks: Task[];
   progress: TaskProgress;
 }
-
-export interface Planet extends Task {
-  image: string;
-  accentColor: string;
-}
-
-export interface PlanetDetail {
-  id: number;
-  name: string;
-  description: string;
-  order: number;
-  execution: TaskExecution;
-  content: string;
-  xpBonus: number;
-  missions: TaskPayload;
-  image: string;
-  accentColor: string;
-}

@@ -3,7 +3,7 @@ import {
   LoginRequestDTO,
   LoginResponseDTO,
   RegisterRequestDTO,
-} from "../../models/auth.types";
+} from "../../models/auth";
 
 function getErrorMessage(error: any): string {
   const data = error?.response?.data;

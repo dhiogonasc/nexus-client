@@ -1,4 +1,4 @@
-import { Task } from "@/models";
+import { Task } from "@/models/task";
 
 interface UIResource {
   image: string;

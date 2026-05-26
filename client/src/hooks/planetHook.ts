@@ -1,7 +1,7 @@
-import { PlanetDetail, TaskPayload } from "@/models";
-import { getAll, getById } from "@/services/planetService";
+import { TaskPayload } from "@/models/task";
+import { PlanetDetail } from "@/models/planet";
+import { planetService } from "@/services/planetService";
 import { useCallback, useEffect, useState } from "react";
-import { Task } from "react-native";
 
 export function useAllPlanets() {
   const [planets, setPlanets] = useState<TaskPayload | null>(null);
@@ -13,7 +13,7 @@ export function useAllPlanets() {
     setError(null);
 
     try {
-      const data = await getAll();
+      const data = await planetService.getAll();
       setPlanets(data);
     } catch {
       setError("Nenhum planeta encontrado!");
@@ -41,7 +41,7 @@ export function usePlanetById(id: number) {
     setError(null);
 
     try {
-      const data = await getById(id);
+      const data = await planetService.getById(id);
       setPlanet(data);
     } catch {
       setError("Nenhum planeta encontrado!");

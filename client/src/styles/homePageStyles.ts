@@ -24,6 +24,10 @@ export const HomeStyles = StyleSheet.create({
     backgroundColor: TOKEN.bg,
   },
 
+  content: {
+  flex: 1,
+},
+
   // Header responsivo
   headerContainer: {
     width: '100%',

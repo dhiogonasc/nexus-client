@@ -1,9 +1,9 @@
-import api from "../api";
+import api from "./api";
 import {
   LoginRequestDTO,
   LoginResponseDTO,
   RegisterRequestDTO,
-} from "../../models/auth";
+} from "../models/auth";
 
 function getErrorMessage(error: any): string {
   const data = error?.response?.data;

@@ -1,6 +1,6 @@
 export { default as api } from './api';
 
-export * from './auth/auth.service';
+export * from './authService';
 export * from '../models/auth';
 
 export { default as userService } from './domain/user.service';

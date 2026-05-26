@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,15 +8,13 @@ import {
   Image,
   StatusBar,
   ScrollView,
-  Alert,
   ActivityIndicator,
 } from 'react-native';
 
 import { styles as S } from '@/styles/indexStyles';
-import { Link, router } from 'expo-router';
+import { Link, router, useRootNavigationState } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { IoIosRocket } from "react-icons/io";
 
 import EmailInput from '@/components/EmailInput';
 import PasswordInput from '@/components/PasswordInput';
@@ -25,6 +23,8 @@ import { authService } from '@/services';
 import { storage } from '@/services/storage';
 
 export default function Index() {
+  const rootNavigationState = useRootNavigationState();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -36,6 +36,17 @@ export default function Index() {
   function isValidEmail(value: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
+
+  useEffect(() => {
+    if (!loginSuccess) return;
+    if (!rootNavigationState?.key) return;
+
+    const timer = setTimeout(() => {
+      router.replace('/homePage');
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [loginSuccess, rootNavigationState?.key]);
 
   const handleLogin = async () => {
     const cleanEmail = email.trim().toLowerCase();
@@ -84,10 +95,6 @@ export default function Index() {
       await storage.saveToken(token);
 
       setLoginSuccess(true);
-
-      setTimeout(() => {
-        router.replace('/homePage');
-      }, 1000);
     } catch (error: any) {
       const status = error?.response?.status;
 
@@ -160,9 +167,10 @@ export default function Index() {
                   marginBottom: 24,
                 }}
               >
-                <IoIosRocket 
-                size={54}
-                color="#22c55e"
+                <MaterialCommunityIcons
+                  name="rocket-launch"
+                  size={54}
+                  color="#22c55e"
                 />
 
                 <Text
@@ -236,9 +244,9 @@ export default function Index() {
                   >
                     <View
                       style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "center",
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                         gap: 8,
                       }}
                     >
@@ -250,11 +258,11 @@ export default function Index() {
 
                       <Text
                         style={{
-                          color: "#fb4f4f",
-                          textAlign: "center",
+                          color: '#fb4f4f',
+                          textAlign: 'center',
                           fontSize: 14,
                           lineHeight: 18,
-                          fontWeight: "bold",
+                          fontWeight: 'bold',
                           flexShrink: 1,
                         }}
                       >

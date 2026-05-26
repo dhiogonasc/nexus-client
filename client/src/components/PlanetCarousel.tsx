@@ -106,11 +106,12 @@ export default function PlanetCarousel() {
             justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: '#020617',
+            padding: 40,
           },
         ]}
       >
         <ActivityIndicator size="large" color="#3B82F6" />
-        <Text style={{ color: '#fff', marginTop: 10 }}>
+        <Text style={{ color: '#fff', marginTop: 10, textAlign: 'center' }}>
           Mapeando galáxia...
         </Text>
       </View>
@@ -356,6 +357,9 @@ export default function PlanetCarousel() {
       </ImageBackground>
 
       {/* Botão de explorar ou mensagem de bloqueio */}
+      <View style={{ height: 1, backgroundColor: 'rrgb(30, 41, 59)ed'  }}>
+        
+      </View>
       <TouchableOpacity
         style={{
           backgroundColor: displayColor,
@@ -363,8 +367,8 @@ export default function PlanetCarousel() {
           paddingLeft: 35,
           paddingRight: 35,
           borderRadius: 8,
-          marginTop: 15,
-          marginBottom: 25,
+          marginTop: 14,
+          marginBottom: 15,
           alignItems: 'center',
           marginLeft: 'auto',
           marginRight: 'auto',

@@ -8,8 +8,8 @@ export const handleLogout = async () => {
       }
     } else {
       Alert.alert(
-        "Certeza q vai sair?",
-        "Vai sair pra q mlk, volta!",
+        "Tem certeza que deseja sair?",
+        "Estude sempre! Você pode entrar novamente a qualquer momento.",
         [
           {
             text: "Cancelar",

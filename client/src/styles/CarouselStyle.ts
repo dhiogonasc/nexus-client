@@ -124,6 +124,7 @@ export const CarouselStyles = StyleSheet.create({
     color: TOKEN.textSecondary,
     fontSize: 11,
     fontWeight: '500',
+    maxWidth: 230,
   },
 
   // Dots

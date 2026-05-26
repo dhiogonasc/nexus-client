@@ -8,7 +8,6 @@ export default function LogoutScreen() {
   const router = useRouter();
 
   const confirmarSaida = () => {
-    // Executa a sua lógica de logout e depois redireciona para o login (rota '/')
     handleLogout();
     router.replace('/'); 
   };

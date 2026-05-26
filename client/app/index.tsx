@@ -16,6 +16,7 @@ import { styles as S } from '@/styles/indexStyles';
 import { Link, router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { IoIosRocket } from "react-icons/io";
 
 import EmailInput from '@/components/EmailInput';
 import PasswordInput from '@/components/PasswordInput';
@@ -153,16 +154,15 @@ export default function Index() {
                   justifyContent: 'center',
                   padding: 24,
                   borderRadius: 18,
-                  backgroundColor: 'rgba(34, 197, 94, 0.15)',
+                  backgroundColor: 'rgba(34, 197, 94, 0.07)',
                   borderWidth: 1,
                   borderColor: '#22c55e',
                   marginBottom: 24,
                 }}
               >
-                <MaterialCommunityIcons
-                  name="check-circle-outline"
-                  size={54}
-                  color="#22c55e"
+                <IoIosRocket 
+                size={54}
+                color="#22c55e"
                 />
 
                 <Text

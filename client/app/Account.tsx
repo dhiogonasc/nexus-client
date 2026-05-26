@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 import { AccountStyles as S } from '@/styles/AccountStyles';
-import { LinearGradient } from 'expo-linear-gradient'
+import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import api from '@/services/api';
@@ -27,6 +27,7 @@ interface UserData {
   levelDescription: string;
   nextLevelName?: string;
   nextLevelXpRequired?: number;
+  planetId?: number;
   planetName?: string;
   missionName?: string;
 }
@@ -35,6 +36,15 @@ function formatLevelName(levelName: string) {
   if (!levelName) return 'Interplanetário';
 
   return levelName.replace(/_/g, ' ').toUpperCase();
+}
+
+function getPlanetAccentColor(planetId?: number) {
+  if (Number(planetId) === 1) return '#22c55e';
+  if (Number(planetId) === 2) return '#a855f7';
+  if (Number(planetId) === 3) return '#406fd4';
+  if (Number(planetId) === 4) return '#f97316';
+
+  return '#38BDF8';
 }
 
 export default function Account() {
@@ -68,6 +78,7 @@ export default function Account() {
         nextLevelName: nextLevel?.name,
         nextLevelXpRequired: nextLevel?.xpRequired,
 
+        planetId: planet?.id,
         planetName: planet?.name,
         missionName: mission?.name,
       };
@@ -111,6 +122,10 @@ export default function Account() {
 
     return formatLevelName(user.nextLevelName);
   }, [user]);
+
+  const planetAccentColor = useMemo(() => {
+    return getPlanetAccentColor(user?.planetId);
+  }, [user?.planetId]);
 
   return (
     <KeyboardAvoidingView
@@ -269,6 +284,14 @@ export default function Account() {
 
                   <Text style={S.value}>
                     {user.missionName || 'Nenhuma missão atual'}
+                  </Text>
+
+                  <Text style={S.descriptionText}>
+                    no planeta{' '}
+                    <Text style={[S.planetName, { color: planetAccentColor }]}>
+                      {user.planetName || 'desconhecido'}
+                    </Text>
+                    .
                   </Text>
                 </View>
               </>

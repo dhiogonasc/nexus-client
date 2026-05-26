@@ -123,6 +123,12 @@ export const AccountStyles = StyleSheet.create({
     lineHeight: 19,
   },
 
+  planetName: {
+    color: '#38BDF8',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+
   line: {
     height: 1,
     backgroundColor: 'rgba(148, 163, 184, 0.18)',

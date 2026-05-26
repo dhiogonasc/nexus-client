@@ -95,6 +95,7 @@ export default function MissionPage() {
       errorMessage={missionFlow.errorMessage}
       finishing={missionFlow.finishing}
       onBack={missionFlow.voltarParaPlaneta}
+      onPrevious={missionFlow.voltarQuestaoAnterior}
       onSelectAlternative={missionFlow.selecionarAlternativa}
       onConfirm={missionFlow.confirmarResposta}
     />

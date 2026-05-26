@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 
 import { BlurView } from 'expo-blur';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { styles } from '@/styles/idMissionStyle';
 
@@ -28,6 +29,7 @@ type Props = {
   errorMessage: string;
   finishing: boolean;
   onBack: () => void;
+  onPrevious: () => void;
   onSelectAlternative: (index: number) => void;
   onConfirm: () => void;
 };
@@ -44,9 +46,12 @@ export default function MissionQuestion({
   errorMessage,
   finishing,
   onBack,
+  onPrevious,
   onSelectAlternative,
   onConfirm,
 }: Props) {
+  const canGoPrevious = currentQuestionIndex > 0;
+
   return (
     <MissionBackground>
       <MissionHeader
@@ -146,29 +151,75 @@ export default function MissionQuestion({
             </View>
           ) : null}
 
-          <TouchableOpacity
-            style={[
-              styles.confirmButton,
-              {
-                backgroundColor:
-                  opcaoSelecionada !== null && !finishing
-                    ? accentColor
-                    : '#334155',
-              },
-            ]}
-            disabled={opcaoSelecionada === null || finishing}
-            onPress={onConfirm}
+          <View
+            style={{
+              width: '100%',
+              flexDirection: canGoPrevious ? 'row' : 'column',
+              gap: 12,
+            }}
           >
-            {finishing ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text style={styles.confirmButtonText}>
-                {currentQuestionIndex < questionsLength - 1
-                  ? 'Próxima pergunta'
-                  : 'Finalizar missão'}
-              </Text>
+            {canGoPrevious && (
+              <TouchableOpacity
+                style={[
+                  styles.confirmButton,
+                  {
+                    flex: 1,
+                    backgroundColor: 'rgba(148,163,184,0.18)',
+                    borderWidth: 1,
+                    borderColor: 'rgba(148,163,184,0.35)',
+                  },
+                ]}
+                disabled={finishing}
+                onPress={onPrevious}
+                activeOpacity={0.8}
+              >
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="arrow-left"
+                    size={20}
+                    color="#E2E8F0"
+                  />
+
+                  <Text style={styles.confirmButtonText}>
+                    Anterior
+                  </Text>
+                </View>
+              </TouchableOpacity>
             )}
-          </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.confirmButton,
+                {
+                  flex: canGoPrevious ? 1 : undefined,
+                  backgroundColor:
+                    opcaoSelecionada !== null && !finishing
+                      ? accentColor
+                      : '#334155',
+                },
+              ]}
+              disabled={opcaoSelecionada === null || finishing}
+              onPress={onConfirm}
+              activeOpacity={0.8}
+            >
+              {finishing ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text style={styles.confirmButtonText}>
+                  {currentQuestionIndex < questionsLength - 1
+                    ? 'Próxima'
+                    : 'Finalizar'}
+                </Text>
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </MissionBackground>

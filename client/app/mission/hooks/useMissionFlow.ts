@@ -185,6 +185,22 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
     setErrorMessage('');
   }
 
+  function getSelectedIndexByQuestion(question: Question, currentAnswers = answers) {
+    const savedAnswer = currentAnswers.find(
+      (item) => Number(item.questionId) === Number(question.id),
+    );
+
+    if (!savedAnswer) {
+      return null;
+    }
+
+    const alternativeIndex = question.alternatives.findIndex(
+      (alternative) => Number(alternative.id) === Number(savedAnswer.alternativeId),
+    );
+
+    return alternativeIndex >= 0 ? alternativeIndex : null;
+  }
+
   function salvarRespostaAtual() {
     if (!currentQuestion) {
       return null;
@@ -206,10 +222,37 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
     };
 
     const filteredAnswers = answers.filter(
-      (item) => item.questionId !== answer.questionId,
+      (item) => Number(item.questionId) !== Number(answer.questionId),
     );
 
     return [...filteredAnswers, answer];
+  }
+
+  function voltarQuestaoAnterior() {
+    if (currentQuestionIndex <= 0) {
+      return;
+    }
+
+    let updatedAnswers = answers;
+
+    const savedCurrentAnswer = salvarRespostaAtual();
+
+    if (savedCurrentAnswer) {
+      updatedAnswers = savedCurrentAnswer;
+      setAnswers(savedCurrentAnswer);
+    }
+
+    const previousIndex = currentQuestionIndex - 1;
+    const previousQuestion = questions[previousIndex];
+
+    const previousSelectedIndex = getSelectedIndexByQuestion(
+      previousQuestion,
+      updatedAnswers,
+    );
+
+    setCurrentQuestionIndex(previousIndex);
+    setOpcaoSelecionada(previousSelectedIndex);
+    setErrorMessage('');
   }
 
   async function confirmarResposta() {
@@ -229,8 +272,16 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
     const isLastQuestion = currentQuestionIndex >= questions.length - 1;
 
     if (!isLastQuestion) {
-      setCurrentQuestionIndex((prev) => prev + 1);
-      setOpcaoSelecionada(null);
+      const nextIndex = currentQuestionIndex + 1;
+      const nextQuestion = questions[nextIndex];
+
+      const nextSelectedIndex = getSelectedIndexByQuestion(
+        nextQuestion,
+        updatedAnswers,
+      );
+
+      setCurrentQuestionIndex(nextIndex);
+      setOpcaoSelecionada(nextSelectedIndex);
       setErrorMessage('');
       return;
     }
@@ -311,6 +362,7 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
     iniciarQuestoes,
     selecionarAlternativa,
     confirmarResposta,
+    voltarQuestaoAnterior,
     reiniciarMissao,
     voltarParaPlaneta,
     irParaProximaMissao,

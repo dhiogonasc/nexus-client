@@ -57,10 +57,10 @@ export const styles = StyleSheet.create({
   
   // Substitui a margem inline das Views dos inputs
   inputMargin: {
-    marginBottom: 15,
+    marginBottom: 0,
   },
   inputMarginBottom: {
-    marginBottom: 35, // Afastamento maior antes do botão (ajustado de 85 para 35 para melhor harmonia)
+    marginBottom: 0, // Afastamento maior antes do botão (ajustado de 85 para 35 para melhor harmonia)
   },
 
   button: {

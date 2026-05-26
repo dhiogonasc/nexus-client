@@ -226,24 +226,41 @@ export default function Index() {
                   <View
                     style={{
                       width: '100%',
-                      padding: 12,
+                      padding: 10,
                       borderRadius: 12,
-                      backgroundColor: 'rgba(239,68,68,0.15)',
+                      backgroundColor: 'rgba(253, 48, 48, 0.09)',
                       borderWidth: 1,
-                      borderColor: '#ef4444',
+                      borderColor: '#c4c4c4',
                       marginBottom: 16,
                     }}
                   >
-                    <Text
+                    <View
                       style={{
-                        color: '#fecaca',
-                        textAlign: 'center',
-                        fontSize: 13,
-                        lineHeight: 18,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 8,
                       }}
                     >
-                      {errorMessage}
-                    </Text>
+                      <MaterialCommunityIcons
+                        name="alert-outline"
+                        size={20}
+                        color="#fb4f4f"
+                      />
+
+                      <Text
+                        style={{
+                          color: "#fb4f4f",
+                          textAlign: "center",
+                          fontSize: 14,
+                          lineHeight: 18,
+                          fontWeight: "bold",
+                          flexShrink: 1,
+                        }}
+                      >
+                        {errorMessage}
+                      </Text>
+                    </View>
                   </View>
                 ) : null}
 

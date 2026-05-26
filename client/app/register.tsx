@@ -8,7 +8,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Alert,
   ActivityIndicator,
 } from "react-native";
 
@@ -31,9 +30,42 @@ export default function RegisterScreen() {
 
   const [loading, setLoading] = useState(false);
   const [registerSuccess, setRegisterSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   function isValidEmail(value: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+  function getBackendErrorMessage(error: any) {
+    const data = error?.response?.data;
+
+    if (!data) {
+      return "Não foi possível conectar ao servidor.";
+    }
+
+    if (typeof data === "string") {
+      return data;
+    }
+
+    if (data.message) {
+      return data.message;
+    }
+
+    if (data.error) {
+      return data.error;
+    }
+
+    if (data.detail) {
+      return data.detail;
+    }
+
+    if (Array.isArray(data.errors) && data.errors.length > 0) {
+      return data.errors
+        .map((item: any) => item.defaultMessage || item.message || String(item))
+        .join("\n");
+    }
+
+    return "Não foi possível realizar o cadastro.";
   }
 
   const handleRegister = async () => {
@@ -42,28 +74,45 @@ export default function RegisterScreen() {
     const cleanPassword = String(password);
     const cleanConfirmPassword = String(confirmPassword);
 
-    if (!cleanUsername || cleanUsername.length < 3) {
-      Alert.alert("Erro", "O nome de usuário deve ter pelo menos 3 caracteres.");
+    setErrorMessage("");
+
+    if (!cleanUsername) {
+      setErrorMessage("Digite seu nome de usuário.");
+      return;
+    }
+
+    if (cleanUsername.length < 3) {
+      setErrorMessage("O nome de usuário deve ter pelo menos 3 caracteres.");
       return;
     }
 
     if (!cleanEmail) {
-      Alert.alert("Erro", "Digite seu e-mail.");
+      setErrorMessage("Digite seu e-mail.");
       return;
     }
 
     if (!isValidEmail(cleanEmail)) {
-      Alert.alert("Erro", "Digite um e-mail válido.");
+      setErrorMessage("Digite um e-mail válido.");
       return;
     }
 
-    if (!cleanPassword || cleanPassword.length < 8) {
-      Alert.alert("Erro", "A senha deve ter no mínimo 8 caracteres.");
+    if (!cleanPassword) {
+      setErrorMessage("Digite sua senha.");
+      return;
+    }
+
+    if (cleanPassword.length < 8) {
+      setErrorMessage("A senha deve ter no mínimo 8 caracteres.");
+      return;
+    }
+
+    if (!cleanConfirmPassword) {
+      setErrorMessage("Confirme sua senha.");
       return;
     }
 
     if (cleanPassword !== cleanConfirmPassword) {
-      Alert.alert("Erro", "As senhas não coincidem.");
+      setErrorMessage("As senhas não coincidem.");
       return;
     }
 
@@ -84,9 +133,8 @@ export default function RegisterScreen() {
     } catch (error: any) {
       console.error("Erro ao cadastrar usuário", error);
 
-      Alert.alert(
-        "Erro no cadastro",
-        error?.message || "Não foi possível realizar o cadastro.",
+      setErrorMessage(
+        error?.message || getBackendErrorMessage(error)
       );
     } finally {
       setLoading(false);
@@ -181,7 +229,10 @@ export default function RegisterScreen() {
                   iconName="user"
                   placeholder="Digite seu nome de usuário"
                   value={username}
-                  onChangeText={setUsername}
+                  onChangeText={(text: string) => {
+                    setUsername(text);
+                    setErrorMessage("");
+                  }}
                 />
 
                 <EmailInput
@@ -191,20 +242,72 @@ export default function RegisterScreen() {
                   autoCapitalize="none"
                   autoCorrect={false}
                   value={email}
-                  onChangeText={setEmail}
+                  onChangeText={(text: string) => {
+                    setEmail(text);
+                    setErrorMessage("");
+                  }}
                 />
 
                 <DoublePasswordInput
                   password={password}
-                  setPassword={setPassword}
+                  setPassword={(text: string) => {
+                    setPassword(text);
+                    setErrorMessage("");
+                  }}
                   confirmPassword={confirmPassword}
-                  setConfirmPassword={setConfirmPassword}
+                  setConfirmPassword={(text: string) => {
+                    setConfirmPassword(text);
+                    setErrorMessage("");
+                  }}
                 />
+
+                {errorMessage ? (
+                  <View
+                    style={{
+                      width: "100%",
+                      padding: 10,
+                      borderRadius: 12,
+                      backgroundColor: "rgba(253, 48, 48, 0.03)",
+                      borderWidth: 1,
+                      borderColor: "#c4c4c4",
+                      marginBottom: 16,
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 8,
+                      }}
+                    >
+                      <MaterialCommunityIcons
+                        name="alert-outline"
+                        size={20}
+                        color="#fb4f4f"
+                      />
+
+                      <Text
+                        style={{
+                          color: "#fb4f4f",
+                          textAlign: "center",
+                          fontSize: 14,
+                          lineHeight: 18,
+                          fontWeight: "bold",
+                          flexShrink: 1,
+                        }}
+                      >
+                        {errorMessage}
+                      </Text>
+                    </View>
+                  </View>
+                ) : null}
 
                 <TouchableOpacity
                   style={[S.button, loading && { opacity: 0.7 }]}
                   onPress={handleRegister}
                   disabled={loading}
+                  activeOpacity={0.8}
                 >
                   {loading ? (
                     <ActivityIndicator color="#fff" />

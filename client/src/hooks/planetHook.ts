@@ -1,0 +1,58 @@
+import { PlanetDetail, TaskPayload } from "@/models";
+import { getAll, getById } from "@/services/planetService";
+import { useCallback, useEffect, useState } from "react";
+import { Task } from "react-native";
+
+export function useAllPlanets() {
+  const [planets, setPlanets] = useState<TaskPayload | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchAll = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await getAll();
+      setPlanets(data);
+    } catch {
+      setError("Nenhum planeta encontrado!");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAll();
+  }, [fetchAll]);
+
+  return { planets, loading, error, refetch: fetchAll };
+}
+
+export function usePlanetById(id: number) {
+  const [planet, setPlanet] = useState<PlanetDetail | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchById = useCallback(async () => {
+    if (!id) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await getById(id);
+      setPlanet(data);
+    } catch {
+      setError("Nenhum planeta encontrado!");
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchById();
+  }, [fetchById]);
+
+  return { planet, loading, error, refetch: fetchById };
+}

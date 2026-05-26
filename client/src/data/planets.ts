@@ -5,7 +5,7 @@ interface UIResource {
   accentColor: string;
 }
 
-const PLANETS: Record<number, UIResource> = {
+export const PLANETS: Record<number, UIResource> = {
   1: {
     image: require('../../assets/Planet1.png'),
     accentColor: '#49d730'

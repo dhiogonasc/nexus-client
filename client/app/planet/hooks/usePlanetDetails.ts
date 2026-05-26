@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import api from '@/services/api';
-import { PLANETAS } from '@/data/planetas';
+import { PLANETS } from '@/data/planets';
 
 import {
   calculatePlanetProgress,
@@ -40,7 +40,7 @@ export function usePlanetDetails({
       const dadosApi = response.data;
 
       const idString = String(planetId);
-      const planetaLocal = (PLANETAS as any)[idString];
+      const planetaLocal = (PLANETS as any)[idString];
 
       const planetaCompleto = {
         ...dadosApi,

@@ -15,21 +15,12 @@ import { CarouselStyles as S } from '@/styles/CarouselStyle';
 import { router } from 'expo-router';
 
 import api from '@/services/api';
-import { formatPlanets } from '@/data/planetas';
+import { formatPlanets } from '@/data/planets';
 
 export default function PlanetCarousel() {
   const [planets, setPlanets] = useState<any[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
-
-  const [index, setIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  const scaleAnim = useRef(new Animated.Value(1)).current;
-  const opacityAnim = useRef(new Animated.Value(1)).current;
-  const translateXAnim = useRef(new Animated.Value(0)).current;
-
-  const useNativeDriver = Platform.OS !== 'web';
 
   useEffect(() => {
     const buscarPlanetas = async () => {
@@ -102,6 +93,15 @@ export default function PlanetCarousel() {
       </View>
     );
   }
+
+  const [index, setIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const opacityAnim = useRef(new Animated.Value(1)).current;
+  const translateXAnim = useRef(new Animated.Value(0)).current;
+
+  const useNativeDriver = Platform.OS !== 'web';
 
   const planeta = planets[index];
 

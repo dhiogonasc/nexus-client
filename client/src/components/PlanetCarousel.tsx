@@ -39,7 +39,7 @@ export default function PlanetCarousel() {
 
         const request = await api.get('/planets');
         const response = request.data;
-        
+
         setPlanets(formatPlanets(response.tasks));
       } catch (error: any) {
         const status = error.response?.status;
@@ -299,7 +299,7 @@ export default function PlanetCarousel() {
         </Animated.View>
 
         <View style={S.dots}>
-          {planetas.map((p, i) => (
+          {planets.map((p, i) => (
             <TouchableOpacity
               key={p.id || i}
               onPress={() => {

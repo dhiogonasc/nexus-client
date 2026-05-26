@@ -1,6 +1,5 @@
 import { Task } from "@/models";
 
-
 interface UIResource {
   image: string;
   accentColor: string;

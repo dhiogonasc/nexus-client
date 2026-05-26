@@ -1,21 +1,37 @@
-// src/data/planetas.ts
+import { Task } from "@/models";
 
-// Criamos um mapeamento simples: ID do Back-end -> Recursos Visuais do Front-end
-export const PLANETAS: Record<string, { imagem: any, accentColor: string }> = {
-  "1": { 
-    imagem: require('../../assets/Planet1.png'), 
-    accentColor: '#49d730' 
+
+interface UIResource {
+  image: string;
+  accentColor: string;
+}
+
+const PLANETS: Record<number, UIResource> = {
+  1: {
+    image: require('../../assets/Planet1.png'),
+    accentColor: '#49d730'
   },
-  "2": { 
-    imagem: require('../../assets/Planet2.png'), 
-    accentColor: '#c40edc' 
+  2: {
+    image: require('../../assets/Planet2.png'),
+    accentColor: '#c40edc'
   },
-  "3": { 
-    imagem: require('../../assets/Planet3.png'), 
-    accentColor: '#3b8a95' 
+  3: {
+    image: require('../../assets/Planet3.png'),
+    accentColor: '#3b8a95'
   },
-  "4": { 
-    imagem: require('../../assets/Planet4.png'), 
-    accentColor: '#406fd4' 
+  4: {
+    image: require('../../assets/Planet4.png'),
+    accentColor: '#406fd4'
   },
 };
+
+export function formatPlanets(planets: Task[]) {
+  return planets.map((planet) => {
+    const resource = PLANETS[planet.order];
+    return {
+      ...planet,
+      imagem: resource?.image,
+      accentColor: resource?.accentColor || '#3B82F6',
+    };
+  });
+}

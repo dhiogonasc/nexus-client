@@ -14,11 +14,11 @@ import { BlurView } from 'expo-blur';
 import { CarouselStyles as S } from '@/styles/CarouselStyle';
 import { router } from 'expo-router';
 
-import { PLANETAS } from '@/data/planetas';
 import api from '@/services/api';
+import { formatPlanets } from '@/data/planetas';
 
 export default function PlanetCarousel() {
-  const [planetas, setPlanetas] = useState<any[]>([]);
+  const [planets, setPlanets] = useState<any[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
 
@@ -37,49 +37,12 @@ export default function PlanetCarousel() {
         setCarregando(true);
         setErro(null);
 
-        const response = await api.get('/planets');
-
-        const listaDePlanetasDaApi =
-          response.data?.planets ||
-          response.data?.tasks ||
-          response.data?.data ||
-          response.data ||
-          [];
-
-        if (!Array.isArray(listaDePlanetasDaApi)) {
-          setErro('Formato inválido recebido da API.');
-          return;
-        }
-
-        const planetasFormatados = listaDePlanetasDaApi.map((planetaApi: any) => {
-          const planetaId = planetaApi.id?.toString();
-          const recursos = PLANETAS[planetaId];
-
-          return {
-            ...planetaApi,
-            id: planetaId,
-            name: planetaApi.name || planetaApi.nome || 'Planeta sem nome',
-            description:
-              planetaApi.description ||
-              planetaApi.descricao ||
-              'Sem descrição disponível.',
-            imagem: recursos?.imagem || require('../../assets/FundoPlanets.png'),
-            accentColor: recursos?.accentColor || '#3B82F6',
-          };
-        });
-
-        setPlanetas(planetasFormatados);
-
-        const planetaAtualIndex = planetasFormatados.findIndex(
-          (p: any) => p.execution?.isCurrent === true,
-        );
-
-        if (planetaAtualIndex !== -1) {
-          setIndex(planetaAtualIndex);
-        }
+        const request = await api.get('/planets');
+        const response = request.data;
+        
+        setPlanets(formatPlanets(response.tasks));
       } catch (error: any) {
         const status = error.response?.status;
-
         if (status === 401) {
           setErro('Sessão expirada ou token inválido. Faça login novamente.');
         } else if (status === 404) {
@@ -117,7 +80,7 @@ export default function PlanetCarousel() {
     );
   }
 
-  if (erro || planetas.length === 0) {
+  if (erro || planets.length === 0) {
     return (
       <View
         style={[
@@ -140,10 +103,15 @@ export default function PlanetCarousel() {
     );
   }
 
-  const planeta = planetas[index];
+  const planeta = planets[index];
 
   const isLocked = planeta.execution?.status === 'LOCKED';
   const displayColor = isLocked ? '#475569' : planeta.accentColor;
+  const currentPlanetIndex = planets.findIndex((p) => p.execution.isCurrent === true);
+
+  if (currentPlanetIndex !== -1) {
+    setIndex(currentPlanetIndex);
+  }
 
   const navegar = (alvo: 'ant' | 'prox' | number) => {
     if (isAnimating) return;
@@ -159,8 +127,8 @@ export default function PlanetCarousel() {
     } else {
       proximoIndex =
         alvo === 'prox'
-          ? (index + 1) % planetas.length
-          : (index - 1 + planetas.length) % planetas.length;
+          ? (index + 1) % planets.length
+          : (index - 1 + planets.length) % planets.length;
 
       direcaoAnimacao = alvo === 'prox' ? -1 : 1;
     }

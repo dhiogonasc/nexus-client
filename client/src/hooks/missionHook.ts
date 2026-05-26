@@ -1,4 +1,4 @@
-import { PlanetDetail } from "@/models/task";
+import { PlanetDetail } from "@/models/planet";
 import { planetService } from "@/services/planetService";
 import { useCallback, useEffect, useState } from "react";
 

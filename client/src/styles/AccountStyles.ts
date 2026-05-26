@@ -1,91 +1,149 @@
 import { StyleSheet, Platform } from 'react-native';
 
-
-// Largura máxima para os dados do perfil não ficarem gigantes no PC
-const MAX_CONTENT_WIDTH = 1200; 
+const MAX_CONTENT_WIDTH = 760;
 
 export const AccountStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
-  },
-  scrollContent: {
-    flexGrow: 1,
-    // Menos espaçamento na base se for Web
-    paddingBottom: Platform.OS === 'web' ? 40 : 60, 
+    backgroundColor: '#020617',
   },
 
-  // --- Estilos da Imagem de Topo ---
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: Platform.OS === 'web' ? 80 : 100,
+  },
+
   imageContainer: {
     width: '100%',
-    height: 230,
+    height: Platform.OS === 'web' ? 250 : 220,
     position: 'relative',
     alignSelf: 'center',
+    overflow: 'hidden',
   },
+
   topImage: {
     width: '100%',
     height: '100%',
   },
+
+  imageBlur: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
+
   gradientFade: {
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
-    height: 120,
+    height: 180,
   },
 
-  // --- Wrapper para responsividade ---
   contentWrapper: {
     width: '100%',
     maxWidth: MAX_CONTENT_WIDTH,
-    alignSelf: 'center', // Centraliza todo o bloco no meio da tela
+    alignSelf: 'center',
+    paddingHorizontal: 20,
+    marginTop: -20,
   },
 
   title: {
-    fontSize: 26,
-    fontWeight: '500',
-    color: '#CCCCCC',
-    marginTop: 20,
-    marginBottom: 30,
+    fontSize: Platform.OS === 'web' ? 30 : 26,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    marginTop: 10,
+    marginBottom: 22,
     textAlign: 'left',
-    paddingHorizontal: 20, // Mudado de paddingLeft para manter a simetria
+    letterSpacing: 0.5,
   },
+
   profileContainer: {
-    backgroundColor: '#1A1A1A',
-    borderRadius: 7,
-    padding: 20,
-    marginHorizontal: 20,
-    marginBottom: 20, // Garante que o botão não cole no fundo da tela
+    width: '100%',
+    backgroundColor: 'rgba(15, 23, 42, 0.88)',
+    borderRadius: 22,
+    padding: Platform.OS === 'web' ? 26 : 20,
+    marginBottom: 30,
+    borderWidth: 1,
+    borderColor: 'rgba(148, 163, 184, 0.22)',
+
+    ...Platform.select({
+      web: {
+        boxShadow: '0px 18px 50px rgba(0, 0, 0, 0.45)',
+      },
+      default: {
+        shadowColor: '#000',
+        shadowOpacity: 0.35,
+        shadowRadius: 16,
+        shadowOffset: {
+          width: 0,
+          height: 10,
+        },
+        elevation: 8,
+      },
+    }),
   },
+
   accountInfo: {
-    // Pode ficar vazio ou ser usado para espaçamentos futuros
+    width: '100%',
   },
+
+  labelContainer: {
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    alignItems: 'center',
+  },
+
+  labelIcon: {
+    marginRight: 10,
+  },
+
   label: {
-    fontSize: 18,
-    fontFamily: 'ArchivoBlack_400Regular',
-    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#CBD5E1',
     marginBottom: 8,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
+
   value: {
-    fontSize: 16,
-    fontWeight: '300',
+    fontSize: Platform.OS === 'web' ? 18 : 16,
+    fontWeight: '700',
     color: '#FFFFFF',
+    lineHeight: 24,
   },
+
+  descriptionText: {
+    color: '#94A3B8',
+    fontSize: 13,
+    marginTop: 6,
+    lineHeight: 19,
+  },
+
   line: {
     height: 1,
-    backgroundColor: '#333333',
-    marginVertical: 22, // marginVertical substitui marginTop e marginBottom iguais
+    backgroundColor: 'rgba(148, 163, 184, 0.18)',
+    marginVertical: 20,
   },
+
   button: {
-    backgroundColor: '#007AFF', 
-    paddingVertical: 12,
-    borderRadius: 8,
+    backgroundColor: '#406fd4',
+    height: 54,
+    borderRadius: 16,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10, // Um pequeno respiro do último input para o botão
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.12)',
   },
+
   buttonText: {
-    color: '#FFF',
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '800',
+    letterSpacing: 0.3,
   },
 });

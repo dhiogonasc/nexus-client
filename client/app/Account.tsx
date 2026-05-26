@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 import { AccountStyles as S } from '@/styles/AccountStyles';
-import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import api from '@/services/api';
@@ -34,9 +34,7 @@ interface UserData {
 function formatLevelName(levelName: string) {
   if (!levelName) return 'Interplanetário';
 
-  return levelName
-    .replace(/_/g, ' ')
-    .toUpperCase()
+  return levelName.replace(/_/g, ' ').toUpperCase();
 }
 
 export default function Account() {
@@ -62,6 +60,7 @@ export default function Account() {
         name: data.username || data.name || 'Jogador',
         email: data.email || 'sem-email',
         xp: Number(data.xp || 0),
+
         level: Number(level?.id || 1),
         levelName: String(level?.name || 'ALUMINIUM_I'),
         levelDescription: String(level?.description || 'Nível inicial'),
@@ -81,10 +80,7 @@ export default function Account() {
         error?.response?.data || error,
       );
 
-      Alert.alert(
-        'Ops!',
-        'Não foi possível carregar os dados do seu perfil.',
-      );
+      Alert.alert('Ops!', 'Não foi possível carregar os dados do seu perfil.');
 
       setUser(null);
     } finally {
@@ -134,13 +130,18 @@ export default function Account() {
 
         <View style={S.imageContainer}>
           <Image
-            source={require('../assets/LoginImg.jpg')}
+            source={require('../assets/FundoPlanets.png')}
             style={S.topImage}
             resizeMode="cover"
           />
 
           <LinearGradient
-            colors={['transparent', '#000000']}
+            colors={[
+              'rgba(0,0,0,0.05)',
+              'rgba(0,0,0,0.35)',
+              '#020617',
+            ]}
+            locations={[0, 0.55, 1]}
             style={S.gradientFade}
           />
         </View>
@@ -170,18 +171,12 @@ export default function Account() {
             ) : (
               <>
                 <View style={S.accountInfo}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignSelf: 'flex-start',
-                      alignItems: 'center',
-                    }}
-                  >
+                  <View style={S.labelContainer}>
                     <MaterialCommunityIcons
                       name="account"
                       size={20}
-                      color="#FFFFFF"
-                      style={{ marginRight: 10 }}
+                      color="#60A5FA"
+                      style={S.labelIcon}
                     />
 
                     <Text style={S.label}>NOME</Text>
@@ -192,18 +187,12 @@ export default function Account() {
                 </View>
 
                 <View style={S.accountInfo}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignSelf: 'flex-start',
-                      alignItems: 'center',
-                    }}
-                  >
+                  <View style={S.labelContainer}>
                     <MaterialCommunityIcons
                       name="email-outline"
                       size={20}
-                      color="#FFFFFF"
-                      style={{ marginRight: 10 }}
+                      color="#A78BFA"
+                      style={S.labelIcon}
                     />
 
                     <Text style={S.label}>EMAIL</Text>
@@ -214,18 +203,12 @@ export default function Account() {
                 </View>
 
                 <View style={S.accountInfo}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignSelf: 'flex-start',
-                      alignItems: 'center',
-                    }}
-                  >
+                  <View style={S.labelContainer}>
                     <MaterialCommunityIcons
                       name="fire"
                       size={20}
-                      color="#FFFFFF"
-                      style={{ marginRight: 10 }}
+                      color="#FB923C"
+                      style={S.labelIcon}
                     />
 
                     <Text style={S.label}>XP</Text>
@@ -236,18 +219,12 @@ export default function Account() {
                 </View>
 
                 <View style={S.accountInfo}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignSelf: 'flex-start',
-                      alignItems: 'center',
-                    }}
-                  >
+                  <View style={S.labelContainer}>
                     <MaterialCommunityIcons
                       name="medal-outline"
                       size={20}
-                      color="#FFFFFF"
-                      style={{ marginRight: 10 }}
+                      color="#FACC15"
+                      style={S.labelIcon}
                     />
 
                     <Text style={S.label}>NÍVEL ATUAL</Text>
@@ -255,13 +232,7 @@ export default function Account() {
 
                   <Text style={S.value}>{levelText}</Text>
 
-                  <Text
-                    style={{
-                      color: '#94A3B8',
-                      fontSize: 13,
-                      marginTop: 6,
-                    }}
-                  >
+                  <Text style={S.descriptionText}>
                     {user.levelDescription}
                   </Text>
 
@@ -269,18 +240,12 @@ export default function Account() {
                 </View>
 
                 <View style={S.accountInfo}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignSelf: 'flex-start',
-                      alignItems: 'center',
-                    }}
-                  >
+                  <View style={S.labelContainer}>
                     <MaterialCommunityIcons
                       name="arrow-up-bold-circle-outline"
                       size={20}
-                      color="#FFFFFF"
-                      style={{ marginRight: 10 }}
+                      color="#22C55E"
+                      style={S.labelIcon}
                     />
 
                     <Text style={S.label}>PRÓXIMO NÍVEL</Text>
@@ -291,18 +256,12 @@ export default function Account() {
                 </View>
 
                 <View style={S.accountInfo}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignSelf: 'flex-start',
-                      alignItems: 'center',
-                    }}
-                  >
+                  <View style={S.labelContainer}>
                     <MaterialCommunityIcons
                       name="rocket-launch-outline"
                       size={20}
-                      color="#FFFFFF"
-                      style={{ marginRight: 10 }}
+                      color="#38BDF8"
+                      style={S.labelIcon}
                     />
 
                     <Text style={S.label}>MISSÃO ATUAL</Text>
@@ -311,9 +270,7 @@ export default function Account() {
                   <Text style={S.value}>
                     {user.missionName || 'Nenhuma missão atual'}
                   </Text>
-                  <View style={S.line} />
                 </View>
-
               </>
             )}
           </View>

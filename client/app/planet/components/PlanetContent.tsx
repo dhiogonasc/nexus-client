@@ -1,33 +1,27 @@
-import React from 'react';
-import {
-  ImageBackground,
-  ScrollView,
-  Text,
-  View,
-} from 'react-native';
+import React from "react";
+import { ImageBackground, ScrollView, Text, View } from "react-native";
 
-import { BlurView } from 'expo-blur';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { BlurView } from "expo-blur";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { styles } from '@/styles/idStyle';
+import { styles } from "@/styles/idStyle";
 
-import { MissionTask } from '../utils/planetHelper';
-
-import PlanetBackground from './PlanetBackground';
-import PlanetHeader from './PlanetHeader';
-import PlanetProgress from './PlanetProgress';
-import MissionCard from './MissionCard';
+import PlanetBackground from "./PlanetBackground";
+import PlanetHeader from "./PlanetHeader";
+import PlanetProgress from "./PlanetProgress";
+import MissionCard from "./MissionCard";
+import { Mission } from "@/models/mission";
 
 type Props = {
   planeta: any;
-  missions: MissionTask[];
+  missions: Mission[];
   progress: {
     total: number;
     completed: number;
     percent: number;
   };
   onBack: () => void;
-  onOpenMission: (mission: MissionTask) => void;
+  onOpenMission: (mission: Mission) => void;
 };
 
 export default function PlanetContent({
@@ -39,10 +33,7 @@ export default function PlanetContent({
 }: Props) {
   return (
     <PlanetBackground>
-      <PlanetHeader
-        accentColor={planeta.accentColor}
-        onBack={onBack}
-      />
+      <PlanetHeader accentColor={planeta.accentColor} onBack={onBack} />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -72,9 +63,9 @@ export default function PlanetContent({
             <View style={styles.descriptionContainer}>
               <View
                 style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  alignSelf: 'flex-start',
+                  flexDirection: "row",
+                  alignItems: "center",
+                  alignSelf: "flex-start",
                   paddingBottom: 16,
                 }}
               >
@@ -85,24 +76,22 @@ export default function PlanetContent({
                   style={{ marginRight: 8 }}
                 />
 
-                <Text style={styles.description}>
-                  {planeta.description}
-                </Text>
+                <Text style={styles.description}>{planeta.description}</Text>
               </View>
 
               <Text style={styles.description}>{planeta.content}</Text>
             </View>
 
-            {planeta.execution?.status === 'LOCKED' ? (
+            {planeta.execution?.status === "LOCKED" ? (
               <View
                 style={{
-                  alignItems: 'center',
+                  alignItems: "center",
                   padding: 25,
                   marginTop: 15,
-                  backgroundColor: 'rgba(0,0,0,0.4)',
+                  backgroundColor: "rgba(0,0,0,0.4)",
                   borderRadius: 12,
                   borderWidth: 1,
-                  borderColor: 'rgba(148, 163, 184, 0.2)',
+                  borderColor: "rgba(148, 163, 184, 0.2)",
                 }}
               >
                 <MaterialCommunityIcons
@@ -113,9 +102,9 @@ export default function PlanetContent({
 
                 <Text
                   style={{
-                    color: '#fff',
+                    color: "#fff",
                     fontSize: 16,
-                    fontWeight: 'bold',
+                    fontWeight: "bold",
                     marginTop: 10,
                   }}
                 >
@@ -124,8 +113,8 @@ export default function PlanetContent({
 
                 <Text
                   style={{
-                    color: '#94A3B8',
-                    textAlign: 'center',
+                    color: "#94A3B8",
+                    textAlign: "center",
                     marginTop: 6,
                     fontSize: 13,
                     lineHeight: 20,
@@ -143,9 +132,7 @@ export default function PlanetContent({
                   percent={progress.percent}
                 />
 
-                <Text style={styles.sectionTitle}>
-                  Módulos Disponíveis
-                </Text>
+                <Text style={styles.sectionTitle}>Módulos Disponíveis</Text>
 
                 {missions.map((mission) => (
                   <MissionCard
@@ -157,7 +144,7 @@ export default function PlanetContent({
                 ))}
 
                 {missions.length === 0 && (
-                  <Text style={{ color: '#94A3B8', marginTop: 10 }}>
+                  <Text style={{ color: "#94A3B8", marginTop: 10 }}>
                     Nenhuma missão detectada neste quadrante.
                   </Text>
                 )}

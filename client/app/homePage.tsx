@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Text,
   View,
+  ScrollView,
   StatusBar,
   Animated,
   ActivityIndicator,
@@ -63,6 +64,7 @@ export default function HomePage() {
 
   const userName = useMemo(() => {
     const possibleName = user?.username || user?.name || '';
+
     return String(possibleName).trim();
   }, [user]);
 
@@ -78,7 +80,10 @@ export default function HomePage() {
         backgroundColor="transparent"
       />
 
-      <View style={S.content}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={S.scrollContent}
+      >
         <Animated.View
           style={[
             S.headerContainer,
@@ -112,7 +117,7 @@ export default function HomePage() {
 
           <PlanetCarousel />
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

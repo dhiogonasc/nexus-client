@@ -1,6 +1,5 @@
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet } from 'react-native';
 
-// Tamanhos máximos para Web
 const MAX_CONTENT_WIDTH = 650;
 
 export const styles = StyleSheet.create({
@@ -8,45 +7,47 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000000',
   },
+
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: Platform.OS === 'web' ? 40 : 60,
+    paddingBottom: 50,
   },
 
-  // --- Estilos da Imagem de Topo ---
   imageContainer: {
     width: '100%',
     height: 230,
     position: 'relative',
     alignSelf: 'center',
+    overflow: 'hidden',
   },
+
   topImage: {
     width: '100%',
     height: '100%',
   },
+
   gradientFade: {
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
-    height: 120,
+    height: 130,
   },
 
-  // --- Wrapper de Responsividade ---
   contentWrapper: {
     width: '100%',
     maxWidth: MAX_CONTENT_WIDTH,
-    alignSelf: 'center', // Centraliza o formulário na Web
-    flex: 1, // Permite que ocupe o resto da tela
+    alignSelf: 'center',
+    flex: 1,
   },
 
-  // --- Estilos do Formulário ---
   formContainer: {
     flex: 1,
-    paddingHorizontal: 40,
-    paddingTop: 25,
     width: '100%',
+    paddingHorizontal: 36,
+    paddingTop: 25,
   },
+
   title: {
     fontSize: 32,
     fontWeight: '800',
@@ -54,49 +55,55 @@ export const styles = StyleSheet.create({
     marginBottom: 50,
     textAlign: 'center',
   },
-  
-  // Substitui a margem inline das Views dos inputs
+
   inputMargin: {
     marginBottom: 0,
   },
+
   inputMarginBottom: {
-    marginBottom: 0, // Afastamento maior antes do botão (ajustado de 85 para 35 para melhor harmonia)
+    marginBottom: 0,
   },
 
   button: {
     backgroundColor: '#D58BE8',
+    width: '100%',
     height: 55,
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
   },
+
   buttonText: {
     color: '#000000',
     fontSize: 18,
     fontWeight: 'bold',
   },
+
   registerContainer: {
     marginTop: 30,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   registerButton: {
     color: '#888888',
     fontSize: 16,
     fontWeight: '400',
   },
+
   registerLink: {
     color: '#F6D48F',
     fontSize: 18,
     fontWeight: '800',
   },
+
   homeLinkContainer: {
-    textAlign: 'center', 
-    color: '#fff', 
+    textAlign: 'center',
+    color: '#FFFFFF',
     marginTop: 20,
   },
+
   eyeIcon: {
     position: 'absolute',
     right: 15,
@@ -104,16 +111,17 @@ export const styles = StyleSheet.create({
     padding: 0,
   },
 
-  // --- Estilos logo lá embaixo ---
   bottomLogo: {
     width: 120,
     height: 120,
     alignSelf: 'center',
-    marginTop: 50, // Empurra a logo para o fundo se houver espaço
+    marginTop: 50,
   },
 
-  // --- Estilos Missões ---
   gridContainer: {
+    width: '100%',
+    maxWidth: MAX_CONTENT_WIDTH,
+    alignSelf: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
@@ -121,21 +129,25 @@ export const styles = StyleSheet.create({
     paddingBottom: 40,
     marginTop: -20,
   },
+
   card: {
     backgroundColor: '#2A2765',
     borderRadius: 24,
     padding: 20,
     width: '48%',
-    height: '60%',
+    minHeight: 220,
     marginBottom: 20,
     alignItems: 'center',
+    justifyContent: 'flex-start',
   },
+
   circleContainer: {
     marginBottom: 16,
     backgroundColor: '#1C1A4A',
     borderRadius: 50,
     padding: 4,
   },
+
   circle: {
     width: 80,
     height: 80,
@@ -145,6 +157,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   cardTitle: {
     color: '#FFFFFF',
     fontSize: 14,
@@ -152,15 +165,17 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 8,
   },
+
   cardDescription: {
     color: '#9CA3AF',
     fontSize: 12,
     textAlign: 'center',
     lineHeight: 16,
   },
+
   imageCards: {
     width: 100,
     height: 80,
     resizeMode: 'contain',
-  }
+  },
 });

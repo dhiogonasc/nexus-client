@@ -5,7 +5,6 @@ import {
 } from "@/models/attempt";
 import { Mission } from "@/models/mission";
 import { missionService } from "@/services/missionService";
-import { planetService } from "@/services/planetService";
 import { useCallback, useEffect, useState } from "react";
 
 export function useMissionById(id: number) {

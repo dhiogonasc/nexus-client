@@ -11,7 +11,6 @@ export const AccountStyles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    // Menos espaçamento na base se for Web
     paddingBottom: Platform.OS === 'web' ? 40 : 60, 
   },
 

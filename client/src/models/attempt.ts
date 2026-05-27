@@ -4,7 +4,7 @@ export interface AttemptStartRequest {
   missionId: number;
 }
 
-interface Answer {
+export interface Answer {
   questionId: number;
   alternativeId: number;
 }

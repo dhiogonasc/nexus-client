@@ -1,12 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from "react";
 
-import api from '@/services/api';
-
-import {
-  calculatePlanetProgress,
-  MissionTask,
-} from '../utils/planetHelper';
-import { PLANETS } from '@/models/planet';
+import { PLANETS } from "@/models/planet";
+import { api } from "@/services/api";
+import { Mission } from "@/models/mission";
+import { calculatePlanetProgress } from "../utils/planetHelper";
 
 type UsePlanetDetailsParams = {
   id?: string | string[];
@@ -27,7 +24,7 @@ export function usePlanetDetails({
 
   async function buscarDetalhesPlaneta() {
     if (!planetId) {
-      setErro('Coordenadas não identificadas.');
+      setErro("Coordenadas não identificadas.");
       setCarregando(false);
       return;
     }
@@ -46,16 +43,17 @@ export function usePlanetDetails({
         ...dadosApi,
         id: dadosApi.id?.toString() || idString,
         name: dadosApi.name || dadosApi.nome,
-        description: dadosApi.description || dadosApi.descricao || '',
-        content: dadosApi.content || '',
-        imagem: planetaLocal?.imagem || require('../../../assets/FundoPlanets.png'),
-        accentColor: planetaLocal?.accentColor || '#3B82F6',
+        description: dadosApi.description || dadosApi.descricao || "",
+        content: dadosApi.content || "",
+        imagem:
+          planetaLocal?.imagem || require("../../../assets/FundoPlanets.png"),
+        accentColor: planetaLocal?.accentColor || "#3B82F6",
       };
 
       setPlaneta(planetaCompleto);
     } catch (error) {
-      console.error('Erro ao buscar detalhes do planeta:', error);
-      setErro('Não foi possível estabelecer conexão com o planeta.');
+      console.error("Erro ao buscar detalhes do planeta:", error);
+      setErro("Não foi possível estabelecer conexão com o planeta.");
     } finally {
       setCarregando(false);
     }
@@ -65,7 +63,7 @@ export function usePlanetDetails({
     buscarDetalhesPlaneta();
   }, [planetId, refresh]);
 
-  const missions: MissionTask[] = useMemo(() => {
+  const missions: Mission[] = useMemo(() => {
     return planeta?.missions?.tasks || [];
   }, [planeta]);
 
@@ -74,12 +72,12 @@ export function usePlanetDetails({
   }, [missions]);
 
   function voltar() {
-    router.replace('/homePage');
+    router.replace("/homePage");
   }
 
-  function abrirMissao(missao: MissionTask) {
+  function abrirMissao(missao: Mission) {
     router.push({
-      pathname: '/mission/[id]',
+      pathname: "/mission/[id]",
       params: {
         id: String(missao.id),
         planetId: String(planeta.id),

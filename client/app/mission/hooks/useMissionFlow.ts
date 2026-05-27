@@ -1,41 +1,41 @@
-/*import { useEffect, useMemo, useState } from 'react';
-
-import api from '@/services/api';
-
-import missionService, {
-  AttemptAnswerRequest,
-  AttemptFinishResponse,
-  MissionDetail,
-  Question,
-} from '@/services/domain/mission.service';
+import { useEffect, useMemo, useState } from "react";
 
 import {
   getMissionErrorMessage,
   getPlanetAccentColor,
-} from '../utils/missionHelper';
+} from "../utils/missionHelper";
+import { Mission, Question } from "@/models/mission";
+import {
+  Answer,
+  AttemptFinishRequest,
+  AttemptResponse,
+  AttemptStartRequest,
+} from "@/models/attempt";
+import { missionService } from "@/services/missionService";
+import { api } from "@/services/api";
 
 type UseMissionFlowParams = {
-  id?: string;
+  id?: AttemptStartRequest;
   planetId?: string;
   router: any;
 };
 
 export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
-  const [mission, setMission] = useState<MissionDetail | null>(null);
+  const [mission, setMission] = useState<Mission | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const [opcaoSelecionada, setOpcaoSelecionada] = useState<number | null>(null);
-  const [answers, setAnswers] = useState<AttemptAnswerRequest[]>([]);
+  const [answers, setAnswers] = useState<AttemptFinishRequest>([]);
 
   const [loading, setLoading] = useState(true);
   const [finishing, setFinishing] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [showIntro, setShowIntro] = useState(true);
   const [nextMissionId, setNextMissionId] = useState<string | null>(null);
 
-  const [finishResult, setFinishResult] = useState<AttemptFinishResponse | null>(
+  const [finishResult, setFinishResult] = useState<AttemptResponse | null>(
     null,
   );
 
@@ -46,23 +46,23 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
   const currentQuestion = questions[currentQuestionIndex];
 
   const missionTitle = useMemo(() => {
-    return mission?.name || mission?.title || 'Missão';
+    return mission?.name;
   }, [mission]);
 
   const planetName = useMemo(() => {
-    return mission?.planet?.name || 'Planeta';
+    return mission?.planet?.name || "Planeta";
   }, [mission]);
 
   const introText = useMemo(() => {
     return (
       mission?.content ||
       mission?.description ||
-      'Prepare-se para iniciar esta missão. Leia com atenção cada pergunta e escolha a melhor alternativa.'
+      "Prepare-se para iniciar esta missão. Leia com atenção cada pergunta e escolha a melhor alternativa."
     );
   }, [mission]);
 
   const progressText = useMemo(() => {
-    if (!questions.length) return '';
+    if (!questions.length) return "";
 
     return `Pergunta ${currentQuestionIndex + 1} de ${questions.length}`;
   }, [currentQuestionIndex, questions.length]);
@@ -70,7 +70,7 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
   function voltarParaPlaneta() {
     if (planetId) {
       router.replace({
-        pathname: '/planet/[id]',
+        pathname: "/planet/[id]",
         params: {
           id: String(planetId),
           refresh: Date.now().toString(),
@@ -104,7 +104,7 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
         setNextMissionId(null);
       }
     } catch (error) {
-      console.log('Erro ao buscar próxima missão:', error);
+      console.log("Erro ao buscar próxima missão:", error);
       setNextMissionId(null);
     }
   }
@@ -116,7 +116,7 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
     }
 
     router.replace({
-      pathname: '/mission/[id]',
+      pathname: "/mission/[id]",
       params: {
         id: nextMissionId,
         planetId: String(planetId),
@@ -127,13 +127,13 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
   async function carregarMissao() {
     try {
       if (!id) {
-        setErrorMessage('ID da missão não encontrado.');
+        setErrorMessage("ID da missão não encontrado.");
         setLoading(false);
         return;
       }
 
       setLoading(true);
-      setErrorMessage('');
+      setErrorMessage("");
       setFinishResult(null);
       setAnswers([]);
       setOpcaoSelecionada(null);
@@ -141,7 +141,7 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
       setShowIntro(true);
       setNextMissionId(null);
 
-      const missionData = await missionService.getById(id);
+      const missionData = await missionService.getById(id.missionId);
 
       const orderedQuestions = [...(missionData.questions || [])].sort(
         (a, b) => Number(a.order) - Number(b.order),
@@ -155,14 +155,14 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
       const status = error?.response?.status;
 
       if (status === 401 || status === 403) {
-        setErrorMessage('Você precisa estar logado para acessar esta missão.');
+        setErrorMessage("Você precisa estar logado para acessar esta missão.");
         return;
       }
 
       setErrorMessage(
         getMissionErrorMessage(
           error,
-          'Não foi possível carregar a missão. Verifique sua conexão e tente novamente.',
+          "Não foi possível carregar a missão. Verifique sua conexão e tente novamente.",
         ),
       );
     } finally {
@@ -182,7 +182,7 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
     if (finishing || finishResult) return;
 
     setOpcaoSelecionada(index);
-    setErrorMessage('');
+    setErrorMessage("");
   }
 
   function salvarRespostaAtual() {
@@ -200,7 +200,7 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
       return null;
     }
 
-    const answer: AttemptAnswerRequest = {
+    const answer: Answer = {
       questionId: Number(currentQuestion.id),
       alternativeId: Number(selectedAlternative.id),
     };
@@ -220,7 +220,7 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
     const updatedAnswers = salvarRespostaAtual();
 
     if (!updatedAnswers) {
-      setErrorMessage('Selecione uma alternativa válida.');
+      setErrorMessage("Selecione uma alternativa válida.");
       return;
     }
 
@@ -231,22 +231,22 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
     if (!isLastQuestion) {
       setCurrentQuestionIndex((prev) => prev + 1);
       setOpcaoSelecionada(null);
-      setErrorMessage('');
+      setErrorMessage("");
       return;
     }
 
     await finalizarMissao(updatedAnswers);
   }
 
-  async function finalizarMissao(finalAnswers: AttemptAnswerRequest[]) {
+  async function finalizarMissao(finalAnswers: AttemptFinishRequest) {
     try {
       if (!id) {
-        setErrorMessage('ID da missão não encontrado.');
+        setErrorMessage("ID da missão não encontrado.");
         return;
       }
 
       setFinishing(true);
-      setErrorMessage('');
+      setErrorMessage("");
 
       const attemptData = await missionService.startAttempt(id);
 
@@ -262,7 +262,9 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
       const status = error?.response?.status;
 
       if (status === 401 || status === 403) {
-        setErrorMessage('Você precisa estar logado para finalizar esta missão.');
+        setErrorMessage(
+          "Você precisa estar logado para finalizar esta missão.",
+        );
         return;
       }
 
@@ -270,7 +272,7 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
         setErrorMessage(
           getMissionErrorMessage(
             error,
-            'Não foi possível finalizar. Existe uma tentativa em andamento para esta missão.',
+            "Não foi possível finalizar. Existe uma tentativa em andamento para esta missão.",
           ),
         );
         return;
@@ -279,7 +281,7 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
       setErrorMessage(
         getMissionErrorMessage(
           error,
-          'Não foi possível finalizar a missão. Tente novamente em alguns segundos.',
+          "Não foi possível finalizar a missão. Tente novamente em alguns segundos.",
         ),
       );
     } finally {
@@ -316,4 +318,3 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
     irParaProximaMissao,
   };
 }
-*/

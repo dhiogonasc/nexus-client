@@ -1,29 +1,7 @@
-export type MissionTask = {
-  id: number | string;
-  name?: string;
-  title?: string;
-  description?: string;
-  content?: string;
-  status?: string;
-  executionStatus?: string;
-  bestResult?: number | null;
-  best_result?: number | null;
-  result?: number | null;
-  execution?: {
-    status?: string;
-    bestResult?: number | null;
-    best_result?: number | null;
-  };
-};
+import { Mission } from "@/models/mission";
 
-export function getMissionBestResult(missao: MissionTask) {
-  const value =
-    missao.bestResult ??
-    missao.best_result ??
-    missao.result ??
-    missao.execution?.bestResult ??
-    missao.execution?.best_result ??
-    null;
+export function getMissionBestResult(missao: Mission) {
+  const value = missao.bestResult ?? null;
 
   if (value === null || value === undefined) {
     return null;
@@ -32,77 +10,62 @@ export function getMissionBestResult(missao: MissionTask) {
   return Number(value);
 }
 
-export function getMissionStatus(missao: MissionTask) {
-  const explicitStatus =
-    missao.execution?.status || missao.status || missao.executionStatus;
+export function getMissionStatus(missao: Mission) {
+  const status = missao.execution?.status;
 
-  if (explicitStatus === 'LOCKED') return 'LOCKED';
-
-  if (
-    explicitStatus === 'DONE' ||
-    explicitStatus === 'COMPLETED' ||
-    explicitStatus === 'FINISHED'
-  ) {
-    return 'COMPLETED';
-  }
+  if (status === "LOCKED") return "LOCKED";
+  if (status === "COMPLETED") return "COMPLETED";
 
   const bestResult = getMissionBestResult(missao);
 
-  if (bestResult !== null && bestResult >= 70) {
-    return 'COMPLETED';
-  }
+  if (bestResult !== null && bestResult >= 70) return "COMPLETED";
+  if (bestResult !== null && bestResult > 0) return "IN_PROGRESS";
 
-  if (bestResult !== null && bestResult > 0) {
-    return 'IN_PROGRESS';
-  }
-
-  return 'NOT_STARTED';
+  return "NOT_STARTED";
 }
 
-export function getMissionStatusLabel(missao: MissionTask) {
+export function getMissionStatusLabel(missao: Mission) {
   const status = getMissionStatus(missao);
   const bestResult = getMissionBestResult(missao);
 
-  if (status === 'LOCKED') {
-    return 'Bloqueada';
-  }
+  if (status === "LOCKED") return "Bloqueada";
 
-  if (status === 'COMPLETED') {
+  if (status === "COMPLETED") {
     return bestResult !== null
       ? `Concluída • Melhor resultado: ${bestResult}%`
-      : 'Concluída';
+      : "Concluída";
   }
 
-  if (status === 'IN_PROGRESS') {
+  if (status === "IN_PROGRESS") {
     return bestResult !== null
       ? `Em andamento • Melhor resultado: ${bestResult}%`
-      : 'Em andamento';
+      : "Em andamento";
   }
 
-  return 'Não iniciada';
+  return "Não iniciada";
 }
 
-export function getMissionIcon(missao: MissionTask) {
+export function getMissionIcon(missao: Mission) {
   const status = getMissionStatus(missao);
 
-  if (status === 'LOCKED') return 'lock-outline';
-  if (status === 'COMPLETED') return 'check-circle-outline';
-  if (status === 'IN_PROGRESS') return 'progress-clock';
+  if (status === "LOCKED") return "lock-outline";
+  if (status === "COMPLETED") return "check-circle-outline";
+  if (status === "IN_PROGRESS") return "progress-clock";
 
-  return 'rocket-launch-outline';
+  return "rocket-launch-outline";
 }
 
-export function getMissionColor(missao: MissionTask, accentColor: string) {
+export function getMissionColor(missao: Mission, accentColor: string) {
   const status = getMissionStatus(missao);
 
-  if (status === 'LOCKED') return '#64748B';
-  if (status === 'COMPLETED') return '#22C55E';
-  if (status === 'IN_PROGRESS') return '#FACC15';
+  if (status === "LOCKED") return "#64748B";
+  if (status === "COMPLETED") return "#22C55E";
+  if (status === "IN_PROGRESS") return "#FACC15";
 
   return accentColor;
 }
 
-export function calculatePlanetProgress(missions: MissionTask[]) {
+export function calculatePlanetProgress(missions: Mission[]) {
   const total = missions.length;
 
   if (total === 0) {
@@ -114,7 +77,7 @@ export function calculatePlanetProgress(missions: MissionTask[]) {
   }
 
   const completed = missions.filter(
-    (missao) => getMissionStatus(missao) === 'COMPLETED',
+    (missao) => getMissionStatus(missao) === "COMPLETED",
   ).length;
 
   return {

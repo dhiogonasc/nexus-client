@@ -20,8 +20,8 @@ import { Link, router } from "expo-router";
 import DoublePasswordInput from "@/components/DoublePasswordInput";
 import EmailInput from "@/components/EmailInput";
 import UserInput from "@/components/UserInput";
-import { authService } from "@/services";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { authService } from "@/services/authService";
 
 export default function RegisterScreen() {
   const [username, setUsername] = useState("");
@@ -43,7 +43,10 @@ export default function RegisterScreen() {
     const cleanConfirmPassword = String(confirmPassword);
 
     if (!cleanUsername || cleanUsername.length < 3) {
-      Alert.alert("Erro", "O nome de usuário deve ter pelo menos 3 caracteres.");
+      Alert.alert(
+        "Erro",
+        "O nome de usuário deve ter pelo menos 3 caracteres.",
+      );
       return;
     }
 
@@ -170,10 +173,7 @@ export default function RegisterScreen() {
                   Redirecionando para o login...
                 </Text>
 
-                <ActivityIndicator
-                  color="#22c55e"
-                  style={{ marginTop: 18 }}
-                />
+                <ActivityIndicator color="#22c55e" style={{ marginTop: 18 }} />
               </View>
             ) : (
               <>

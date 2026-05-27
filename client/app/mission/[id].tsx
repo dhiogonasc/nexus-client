@@ -1,4 +1,4 @@
-import React from 'react';
+/*import React from 'react';
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
@@ -100,3 +100,5 @@ export default function MissionPage() {
     />
   );
 }
+
+*/

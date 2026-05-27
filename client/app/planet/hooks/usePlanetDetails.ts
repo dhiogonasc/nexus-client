@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import api from '@/services/api';
-import { PLANETS } from '@/data/planets';
 
 import {
   calculatePlanetProgress,
   MissionTask,
 } from '../utils/planetHelper';
+import { PLANETS } from '@/models/planet';
 
 type UsePlanetDetailsParams = {
   id?: string | string[];

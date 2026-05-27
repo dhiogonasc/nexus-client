@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 
 const TOKEN_KEY = 'auth_token_nexus_rpg';
 
-export const storage = {
+export const storageService = {
   saveToken: async (token: string) => {
     try {
       if (!token || token === 'undefined' || token === 'null') {

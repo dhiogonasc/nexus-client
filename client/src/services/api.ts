@@ -1,15 +1,20 @@
-import axios from 'axios';
-import { storage } from './storage';
+import axios from "axios";
+import { storageService } from "./storageService";
 
-const api = axios.create({
-  baseURL: 'https://nexus-server-gewa.onrender.com',
+export const api = axios.create({
+  baseURL: "https://nexus-server-gewa.onrender.com",
 });
 
 api.interceptors.request.use(
   async (config) => {
-    const token = await storage.getToken();
+    const token = await storageService.getToken();
 
-    if (token && token !== 'undefined' && token !== 'null' && !config.url?.includes('/auth/')) {
+    if (
+      token &&
+      token !== "undefined" &&
+      token !== "null" &&
+      !config.url?.includes("/auth/")
+    ) {
       config.headers.Authorization = `Bearer ${token}`;
     }
 
@@ -19,5 +24,3 @@ api.interceptors.request.use(
     return Promise.reject(error);
   },
 );
-
-export default api;

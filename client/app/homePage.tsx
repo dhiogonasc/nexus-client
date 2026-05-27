@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Text,
   View,
@@ -6,46 +6,17 @@ import {
   StatusBar,
   Animated,
   ActivityIndicator,
-} from 'react-native';
+} from "react-native";
 
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { HomeStyles as S } from '@/styles/homePageStyles';
-
-import PlanetCarousel from '@/components/PlanetCarousel';
-import userService, { CurrentUser } from '@/services/domain/user.service';
+import { SafeAreaView } from "react-native-safe-area-context";
+import { HomeStyles as S } from "@/styles/homePageStyles";
+import PlanetCarousel from "@/components/PlanetCarousel";
+import { useCurrentUser } from "@/hooks/userHook";
 
 export default function HomePage() {
+  const { user, loading, error } = useCurrentUser();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
-
-  const [user, setUser] = useState<CurrentUser | null>(null);
-  const [loadingUser, setLoadingUser] = useState(true);
-
-  async function carregarUsuario() {
-    try {
-      setLoadingUser(true);
-
-      const data = await userService.getMe();
-
-      console.log('USUÁRIO LOGADO:', data);
-
-      setUser(data);
-    } catch (error: any) {
-      console.log(
-        'Erro ao buscar usuário logado:',
-        error?.response?.status,
-        error?.response?.data,
-      );
-
-      setUser(null);
-    } finally {
-      setLoadingUser(false);
-    }
-  }
-
-  useEffect(() => {
-    carregarUsuario();
-  }, []);
 
   useEffect(() => {
     Animated.parallel([
@@ -62,18 +33,10 @@ export default function HomePage() {
     ]).start();
   }, [fadeAnim, slideAnim]);
 
-  const userName = useMemo(() => {
-    const possibleName = user?.username || user?.name || '';
-
-    return String(possibleName).trim();
-  }, [user]);
-
-  const greetingText = userName
-    ? `Astronauta ${userName}!`
-    : 'Astronauta!';
+  const greetingText = user?.username ? `Astronauta ${user?.username }!` : "Astronauta!";
 
   return (
-    <SafeAreaView style={S.container} edges={['top']}>
+    <SafeAreaView style={S.container} edges={["top"]}>
       <StatusBar
         barStyle="light-content"
         translucent
@@ -97,8 +60,8 @@ export default function HomePage() {
             <View style={S.headerText}>
               <Text style={S.headerIcon}> 🧑‍🚀 </Text>
 
-              {loadingUser ? (
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {loading ? (
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <ActivityIndicator color="#ffffff" size="small" />
                   <Text style={S.userName}> Carregando...</Text>
                 </View>

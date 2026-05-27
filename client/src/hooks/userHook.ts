@@ -1,6 +1,12 @@
 import { User } from "@/models/user";
-import { userService } from "@/services";
+import { userService } from "@/services/userService";
 import { useCallback, useEffect, useState } from "react";
+
+interface CurrentUser {
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+}
 
 export function useCurrentUser() {
   const [user, setUser] = useState<User | null>(null);
@@ -25,5 +31,11 @@ export function useCurrentUser() {
     getMe();
   }, [getMe]);
 
-  return { user, loading, error, refetch: getMe };
+  const currentUser: CurrentUser = {
+    user: user,
+    loading: loading,
+    error: error,
+  };
+
+  return { ...currentUser, refetch: getMe };
 }

@@ -1,6 +1,6 @@
 import { TaskPayload } from "@/models/task";
-import api from "./api";
-import { PlanetDetail } from "@/models/planet";
+import { Planet } from "@/models/planet";
+import { api } from "./api";
 
 export const planetService = {
   getAll: async (): Promise<TaskPayload> => {
@@ -8,8 +8,8 @@ export const planetService = {
     return request.data;
   },
 
-  getById: async (id: number): Promise<PlanetDetail> => {
-    const request = await api.get<PlanetDetail>(`/planets/${id}`);
+  getById: async (id: number): Promise<Planet> => {
+    const request = await api.get<Planet>(`/planets/${id}`);
     return request.data;
   },
 };

@@ -1,6 +1,6 @@
 import { Task, TaskExecution, TaskPayload } from "./task";
 
-export interface PlanetDetail {
+export interface Planet {
   id: number;
   name: string;
   description: string;

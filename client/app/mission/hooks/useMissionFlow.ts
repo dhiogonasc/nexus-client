@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+/*import { useEffect, useMemo, useState } from 'react';
 
 import api from '@/services/api';
 
@@ -316,3 +316,4 @@ export function useMissionFlow({ id, planetId, router }: UseMissionFlowParams) {
     irParaProximaMissao,
   };
 }
+*/

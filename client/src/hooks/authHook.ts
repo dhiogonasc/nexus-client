@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { router } from "expo-router";
 import { authService } from "@/services/authService";
 import { LoginRequestDTO, RegisterRequestDTO } from "@/models/auth";
-import { storage } from "@/services/storage";
+import { storageService } from "@/services/storageService";
 
 export function useLogin() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -18,9 +18,9 @@ export function useLogin() {
       const data = await authService.login(credentials);
       setSuccess(true);
 
-      await storage.saveToken(data.accessToken);
+      await storageService.saveToken(data.accessToken);
 
-      router.replace("/home");
+      router.replace("/homePage");
     } catch (err: any) {
       const status = err.response?.status;
       if (status === 401 || status === 400) {
@@ -51,12 +51,12 @@ export function useRegister() {
       setSuccess(true);
 
       setTimeout(() => {
-        router.push("/login");
+        router.push("/");
       }, 1500);
     } catch (err: any) {
       const status = err.response?.status;
       if (status === 409) {
-        setError("Este e-mail já está cadastrado no Nexus RPG.");
+        setError("Este e-mail já está cadastrado.");
       } else if (status === 400) {
         setError("Dados inválidos. Verifique os campos preenchidos.");
       } else {

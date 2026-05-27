@@ -12,6 +12,7 @@ import {
 import { AccountStyles as S } from "@/styles/AccountStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useCurrentUser } from "@/hooks/userHook";
+import UserBadge from "@/components/UserBadge";
 
 function formatLevelName(levelName: string | undefined) {
   return levelName?.replace(/_/g, " ").toUpperCase();
@@ -32,7 +33,6 @@ export default function Account() {
       <ScrollView
         contentContainerStyle={S.scrollContent}
         keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
       >
         <StatusBar
           barStyle="light-content"
@@ -41,8 +41,6 @@ export default function Account() {
         />
 
         <View style={S.contentWrapper}>
-          <Text style={S.title}>Seu perfil:</Text>
-
           <View style={S.profileContainer}>
             {loading ? (
               <View style={{ padding: 40, alignItems: "center" }}>
@@ -213,6 +211,8 @@ export default function Account() {
               </>
             )}
           </View>
+
+          <UserBadge />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

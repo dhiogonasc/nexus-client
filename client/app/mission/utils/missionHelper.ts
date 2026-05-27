@@ -1,8 +1,8 @@
-export function getPlanetAccentColor(planetId?: string) {
-  if (String(planetId) === '1') return '#49d730';
-  if (String(planetId) === '2') return '#c40edc';
-  if (String(planetId) === '3') return '#3b8a95';
-  if (String(planetId) === '4') return '#406fd4';
+export function getPlanetAccentColor(order?: string) {
+  if (String(order) === '1') return '#49d730';
+  if (String(order) === '2') return '#c40edc';
+  if (String(order) === '3') return '#3b8a95';
+  if (String(order) === '4') return '#406fd4';
 
   return '#406fd4';
 }

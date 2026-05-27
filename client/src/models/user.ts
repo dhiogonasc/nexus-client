@@ -1,30 +1,30 @@
-export interface NextLevel {
+interface NextLevel {
   id: number;
   name: string;
   xpBonus: number;
   xpRequired: number;
 }
 
-export interface Level {
+interface Level {
   id: number;
   name: string;
   description: string;
   next: NextLevel;
 }
 
-export interface Planet {
+interface Planet {
   id: number;
   name: string;
   description: string;
 }
 
-export interface Mission {
+interface Mission {
   id: number;
   name: string;
   description: string;
 }
 
-export interface Progression {
+interface Progression {
   level: Level;
   planet: Planet;
   mission: Mission;

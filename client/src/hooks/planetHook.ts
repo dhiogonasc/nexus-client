@@ -1,5 +1,5 @@
 import { TaskPayload } from "@/models/task";
-import { PlanetDetail } from "@/models/planet";
+import { Planet } from "@/models/planet";
 import { planetService } from "@/services/planetService";
 import { useCallback, useEffect, useState } from "react";
 
@@ -30,7 +30,7 @@ export function useAllPlanets() {
 }
 
 export function usePlanetById(id: number) {
-  const [planet, setPlanet] = useState<PlanetDetail | null>(null);
+  const [planet, setPlanet] = useState<Planet | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 

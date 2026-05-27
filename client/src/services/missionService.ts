@@ -1,10 +1,32 @@
-
-import { PlanetDetail } from "@/models/planet";
-import api from "./api";
+import { Mission } from "@/models/mission";
+import { api } from "./api";
+import {
+  AttemptFinishRequest,
+  AttemptResponse,
+  AttemptStartRequest,
+} from "@/models/attempt";
 
 export const missionService = {
-  getById: async (id: number): Promise<PlanetDetail> => {
-    const request = await api.get<PlanetDetail>(`/missions/${id}`);
+  getById: async (id: number): Promise<Mission> => {
+    const request = await api.get<Mission>(`/missions/${id}`);
+    return request.data;
+  },
+
+  startAttempt: async (
+    missionId: AttemptStartRequest,
+  ): Promise<AttemptResponse> => {
+    const request = await api.post<AttemptResponse>("/attempts", missionId);
+    return request.data;
+  },
+
+  finishAttempt: async (
+    attemptId: number,
+    answers: AttemptFinishRequest,
+  ): Promise<AttemptResponse> => {
+    const request = await api.post<AttemptResponse>(
+      `/attempts/${attemptId}/finish`,
+      answers,
+    );
     return request.data;
   },
 };

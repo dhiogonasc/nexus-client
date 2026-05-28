@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Text,
   View,
@@ -13,8 +13,8 @@ import { HomeStyles as S } from "@/styles/homePageStyles";
 import PlanetCarousel from "@/components/PlanetCarousel";
 import { useCurrentUser } from "@/hooks/userHook";
 
-export default function HomePage() {
-  const { user, loading, error } = useCurrentUser();
+export default function Home() {
+  const { user, loading } = useCurrentUser();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
 
@@ -33,7 +33,9 @@ export default function HomePage() {
     ]).start();
   }, [fadeAnim, slideAnim]);
 
-  const greetingText = user?.username ? `Astronauta ${user?.username }!` : "Astronauta!";
+  const greetingText = user?.username
+    ? `Astronauta ${user?.username}!`
+    : "Astronauta!";
 
   return (
     <SafeAreaView style={S.container} edges={["top"]}>
@@ -58,8 +60,6 @@ export default function HomePage() {
         >
           <View style={S.headerContent}>
             <View style={S.headerText}>
-              <Text style={S.headerIcon}> 🧑‍🚀 </Text>
-
               {loading ? (
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <ActivityIndicator color="#ffffff" size="small" />

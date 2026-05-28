@@ -1,27 +1,16 @@
-import React from 'react';
+import React from "react";
 
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from "expo-router";
 
-import { usePlanetDetails } from './hooks/usePlanetDetails';
+import PlanetStateScreen from "./components/PlanetStateScreen";
+import PlanetContent from "./components/PlanetContent";
+import { usePlanetById } from "@/hooks/planetHook";
 
-import PlanetStateScreen from './components/PlanetStateScreen';
-import PlanetContent from './components/PlanetContent';
+export default function Planet() {
+  const { id } = useLocalSearchParams<{ id?: string }>();
+  const { planet, loading, error } = usePlanetById(Number(id));
 
-export default function PlanetDetails() {
-  const { id, refresh } = useLocalSearchParams<{
-    id?: string;
-    refresh?: string;
-  }>();
-
-  const router = useRouter();
-
-  const planetDetails = usePlanetDetails({
-    id,
-    refresh,
-    router,
-  });
-
-  if (planetDetails.carregando) {
+  if (loading) {
     return (
       <PlanetStateScreen
         loading
@@ -31,23 +20,17 @@ export default function PlanetDetails() {
     );
   }
 
-  if (planetDetails.erro || !planetDetails.planeta) {
+  if (error || !planet) {
     return (
-      <PlanetStateScreen
-        message={planetDetails.erro || 'Planeta não encontrado.'}
-        color="#406fd4"
-        onBack={planetDetails.voltar}
-      />
+      <PlanetStateScreen message={"Planeta não encontrado."} color="#406fd4" />
     );
   }
 
   return (
     <PlanetContent
-      planeta={planetDetails.planeta}
-      missions={planetDetails.missions}
-      progress={planetDetails.progress}
-      onBack={planetDetails.voltar}
-      onOpenMission={planetDetails.abrirMissao}
+      planeta={planet}
+      missions={planet.missions}
+      progress={planet.progress}
     />
   );
 }

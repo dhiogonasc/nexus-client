@@ -16,8 +16,27 @@ import { router } from "expo-router";
 import { useAllPlanets } from "@/hooks/planetHook";
 
 export default function PlanetCarousel() {
-  const { planets, loading, error } = useAllPlanets();
-  const [erro, setErro] = useState<string | null>(null);
+  const { planets, loading } = useAllPlanets();
+  const [erro] = useState<string | null>(null);
+  const [index, setIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const opacityAnim = useRef(new Animated.Value(1)).current;
+  const translateXAnim = useRef(new Animated.Value(0)).current;
+
+  const useNativeDriver = Platform.OS !== "web";
+
+  useEffect(() => {
+    if (planets?.tasks && planets.tasks.length > 0) {
+      const currentPlanetIndex = planets.tasks.findIndex(
+        (p) => p.execution?.isCurrent === true,
+      );
+      if (currentPlanetIndex !== -1) {
+        setIndex(currentPlanetIndex);
+      }
+    }
+  }, [planets]);
 
   if (loading) {
     return (
@@ -64,23 +83,9 @@ export default function PlanetCarousel() {
     );
   }
 
-  const [index, setIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  const scaleAnim = useRef(new Animated.Value(1)).current;
-  const opacityAnim = useRef(new Animated.Value(1)).current;
-  const translateXAnim = useRef(new Animated.Value(0)).current;
-
-  const useNativeDriver = Platform.OS !== "web";
-
   const planet = planets?.tasks[index];
-
   const isLocked = planet?.execution.status === "LOCKED";
   const displayColor = isLocked ? "#475569" : planet?.accentColor;
-  const currentPlanetIndex =
-    planets?.tasks.findIndex((p) => p.execution.isCurrent === true) || 0;
-
-  setIndex(currentPlanetIndex);
 
   const navegar = (alvo: "ant" | "prox" | number) => {
     if (isAnimating) return;

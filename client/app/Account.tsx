@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import {
   View,
   Text,
@@ -12,7 +12,6 @@ import {
 import { AccountStyles as S } from "@/styles/AccountStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useCurrentUser } from "@/hooks/userHook";
-import UserBadge from "@/components/UserBadge";
 
 function formatLevelName(levelName: string | undefined) {
   return levelName?.replace(/_/g, " ").toUpperCase();
@@ -22,7 +21,15 @@ export default function Account() {
   const { user, loading, error } = useCurrentUser();
 
   const levelText = useMemo(() => {
-    return `Nível ${user?.progression.level} - ${formatLevelName(user?.progression.level.name)}`;
+    if (!user || !user.progression?.level) return "Carregando nível...";
+
+    const levelNumber =
+      typeof user.progression.level === "object"
+        ? user.progression.level.id
+        : user.progression.level;
+    const levelName = user.progression.level.name;
+
+    return `Nível ${levelNumber} - ${formatLevelName(levelName)}`;
   }, [user]);
 
   return (
@@ -211,8 +218,6 @@ export default function Account() {
               </>
             )}
           </View>
-
-          <UserBadge />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

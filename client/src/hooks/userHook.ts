@@ -10,7 +10,7 @@ interface CurrentUser {
 
 export function useCurrentUser() {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const getMe = useCallback(async () => {
@@ -20,7 +20,7 @@ export function useCurrentUser() {
     try {
       const data = await userService.getMe();
       setUser(data);
-    } catch {
+    } catch (err: any) {
       setError("Nenhum usuário encontrado!");
     } finally {
       setLoading(false);
@@ -31,11 +31,5 @@ export function useCurrentUser() {
     getMe();
   }, [getMe]);
 
-  const currentUser: CurrentUser = {
-    user: user,
-    loading: loading,
-    error: error,
-  };
-
-  return { ...currentUser, refetch: getMe };
+  return { user, loading, error, refetch: getMe };
 }

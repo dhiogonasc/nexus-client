@@ -10,6 +10,7 @@ export interface Planet {
   content: string;
   xpBonus: number;
   missions: TaskPayload;
+  progress: TaskProgress;
 }
 
 interface UIResource {

@@ -5,110 +5,28 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  Image,
   StatusBar,
   ScrollView,
-  Alert,
   ActivityIndicator,
 } from "react-native";
 
 import { styles as S } from "@/styles/indexStyles";
-import { Link, router } from "expo-router";
-import { LinearGradient } from "expo-linear-gradient";
+import { Link } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import EmailInput from "@/components/EmailInput";
 import PasswordInput from "@/components/PasswordInput";
-import { authService } from "@/services/authService";
-import { storageService } from "@/services/storageService";
+import { useLogin } from "@/hooks/authHook";
 
 export default function Index() {
+  const { login, loading, error, success } = useLogin();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [loginSuccess, setLoginSuccess] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-
-  function isValidEmail(value: string) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  }
 
   const handleLogin = async () => {
-    const cleanEmail = email.trim().toLowerCase();
-    const cleanPassword = String(password);
-
-    setErrorMessage("");
-
-    if (!cleanEmail) {
-      setErrorMessage("Digite seu e-mail.");
-      return;
-    }
-
-    if (!isValidEmail(cleanEmail)) {
-      setErrorMessage("Digite um e-mail válido.");
-      return;
-    }
-
-    if (!cleanPassword) {
-      setErrorMessage("Digite sua senha.");
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      const data = await authService.login({
-        email: cleanEmail,
-        password: cleanPassword,
-      });
-
-      const token =
-        data?.token ||
-        data?.accessToken ||
-        data?.jwt ||
-        data?.data?.token ||
-        data?.data?.accessToken ||
-        data?.user?.token;
-
-      if (!token || token === "undefined" || token === "null") {
-        setErrorMessage(
-          "Login realizado, mas o token não veio corretamente na resposta da API.",
-        );
-        return;
-      }
-
-      await storageService.saveToken(token);
-
-      setLoginSuccess(true);
-
-      setTimeout(() => {
-        router.replace("/Account");
-      }, 1000);
-    } catch (error: any) {
-      const status = error?.response?.status;
-
-      const backendMessage =
-        error?.response?.data?.message ||
-        error?.response?.data?.error ||
-        error?.response?.data?.detail ||
-        error?.response?.data;
-
-      if (status === 401 || status === 403) {
-        setErrorMessage("E-mail ou senha incorretos.");
-        return;
-      }
-
-      if (typeof backendMessage === "string") {
-        setErrorMessage(backendMessage);
-        return;
-      }
-
-      setErrorMessage("Não foi possível fazer login. Tente novamente.");
-    } finally {
-      setLoading(false);
-    }
+    await login({ email, password });
   };
 
   return (
@@ -127,24 +45,11 @@ export default function Index() {
           backgroundColor="transparent"
         />
 
-        <View style={S.imageContainer}>
-          <Image
-            source={require("../assets/LoginImg.jpg")}
-            style={S.topImage}
-            resizeMode="cover"
-          />
-
-          <LinearGradient
-            colors={["transparent", "#000000"]}
-            style={S.gradientFade}
-          />
-        </View>
-
         <View style={S.contentWrapper}>
           <View style={S.formContainer}>
             <Text style={S.title}>Bem vindo!</Text>
 
-            {loginSuccess ? (
+            {success ? (
               <View
                 style={{
                   width: "100%",
@@ -202,7 +107,6 @@ export default function Index() {
                     value={email}
                     onChangeText={(text: string) => {
                       setEmail(text);
-                      setErrorMessage("");
                     }}
                   />
                 </View>
@@ -214,14 +118,13 @@ export default function Index() {
                     value={password}
                     onChangeText={(text: string) => {
                       setPassword(text);
-                      setErrorMessage("");
                     }}
                     secureTextEntry={!showPassword}
                     onTogglePassword={() => setShowPassword((prev) => !prev)}
                   />
                 </View>
 
-                {errorMessage ? (
+                {error ? (
                   <View
                     style={{
                       width: "100%",
@@ -241,7 +144,7 @@ export default function Index() {
                         lineHeight: 18,
                       }}
                     >
-                      {errorMessage}
+                      {error}
                     </Text>
                   </View>
                 ) : null}
@@ -268,12 +171,6 @@ export default function Index() {
                 </View>
               </>
             )}
-
-            <Image
-              source={require("../assets/LogoNexus.jpg")}
-              style={S.bottomLogo}
-              resizeMode="cover"
-            />
           </View>
         </View>
       </ScrollView>

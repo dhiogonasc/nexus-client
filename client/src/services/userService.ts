@@ -1,5 +1,5 @@
-import api from "./api";
 import { User } from "@/models/user";
+import { api } from "./api";
 
 export const userService = {
   getMe: async (): Promise<User> => {

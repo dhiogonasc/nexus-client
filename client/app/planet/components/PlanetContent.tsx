@@ -9,31 +9,22 @@ import { styles } from "@/styles/idStyle";
 import PlanetBackground from "./PlanetBackground";
 import PlanetHeader from "./PlanetHeader";
 import PlanetProgress from "./PlanetProgress";
-import MissionCard from "./MissionCard";
-import { Mission } from "@/models/mission";
+import { TaskPayload } from "@/models/task";
 
 type Props = {
   planeta: any;
-  missions: Mission[];
+  missions: TaskPayload;
   progress: {
     total: number;
     completed: number;
-    percent: number;
   };
-  onBack: () => void;
-  onOpenMission: (mission: Mission) => void;
 };
 
-export default function PlanetContent({
-  planeta,
-  missions,
-  progress,
-  onBack,
-  onOpenMission,
-}: Props) {
+export default function PlanetContent({ planeta, missions, progress }: Props) {
+  if (!planeta) return null;
   return (
     <PlanetBackground>
-      <PlanetHeader accentColor={planeta.accentColor} onBack={onBack} />
+      <PlanetHeader accentColor={planeta.accentColor} />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -127,14 +118,13 @@ export default function PlanetContent({
               <>
                 <PlanetProgress
                   accentColor={planeta.accentColor}
-                  completed={progress.completed}
-                  total={progress.total}
-                  percent={progress.percent}
+                  completed={progress?.completed || 0}
+                  total={progress?.total || 0}
                 />
 
                 <Text style={styles.sectionTitle}>Módulos Disponíveis</Text>
 
-                {missions.map((mission) => (
+                {/*             {missions.tasks.map((mission) => (
                   <MissionCard
                     key={String(mission.id)}
                     mission={mission}
@@ -147,7 +137,7 @@ export default function PlanetContent({
                   <Text style={{ color: "#94A3B8", marginTop: 10 }}>
                     Nenhuma missão detectada neste quadrante.
                   </Text>
-                )}
+                )}*/}
               </>
             )}
           </BlurView>

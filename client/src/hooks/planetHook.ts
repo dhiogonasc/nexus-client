@@ -1,8 +1,4 @@
-import {
-  FormatedTaskPayload,
-  formatPlanets,
-  Planet,
-} from "@/models/planet";
+import { FormatedTaskPayload, formatPlanets, Planet } from "@/models/planet";
 import { planetService } from "@/services/planetService";
 import { useCallback, useEffect, useState } from "react";
 

@@ -73,7 +73,7 @@ export default function PlanetCarousel() {
 
   const useNativeDriver = Platform.OS !== "web";
 
-  const planet = planets?.tasks[index] || null;
+  const planet = planets?.tasks[index];
 
   const isLocked = planet?.execution.status === "LOCKED";
   const displayColor = isLocked ? "#475569" : planet?.accentColor;

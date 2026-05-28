@@ -1,9 +1,5 @@
 import { Task } from "./task";
 
-export interface AttemptStartRequest {
-  missionId: number;
-}
-
 export interface Answer {
   questionId: number;
   alternativeId: number;

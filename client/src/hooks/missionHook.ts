@@ -1,8 +1,4 @@
-import {
-  AttemptFinishRequest,
-  AttemptResponse,
-  AttemptStartRequest,
-} from "@/models/attempt";
+import { AttemptFinishRequest, AttemptResponse } from "@/models/attempt";
 import { Mission } from "@/models/mission";
 import { missionService } from "@/services/missionService";
 import { useCallback, useEffect, useState } from "react";
@@ -36,16 +32,16 @@ export function useMissionById(id: number) {
 }
 
 export function useStartMission() {
-  const [attempt, setAttempt] = useState<AttemptResponse | null>(null);
+  const [startedAttempt, setAttempt] = useState<AttemptResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const startMission = useCallback(async (payload: AttemptStartRequest) => {
+  const start = useCallback(async (missionId: number) => {
     setLoading(true);
     setError(null);
 
     try {
-      const data = await missionService.startAttempt(payload);
+      const data = await missionService.startAttempt(missionId);
       setAttempt(data);
     } catch {
       setError("Missão em andamento ou já concluída");
@@ -55,15 +51,15 @@ export function useStartMission() {
     }
   }, []);
 
-  return { startMission, attempt, loading, error };
+  return { start, startedAttempt, loading, error };
 }
 
 export function useFinishMission() {
-  const [attempt, setAttempt] = useState<AttemptResponse | null>(null);
+  const [endedAttempt, setAttempt] = useState<AttemptResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const finishMission = useCallback(
+  const finish = useCallback(
     async (attemptId: number, answers: AttemptFinishRequest) => {
       if (!attemptId) return;
 
@@ -83,5 +79,5 @@ export function useFinishMission() {
     [],
   );
 
-  return { finishMission, attempt, loading, error };
+  return { finish, endedAttempt, loading, error };
 }

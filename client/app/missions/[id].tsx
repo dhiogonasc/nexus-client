@@ -22,9 +22,10 @@ export default function Planets() {
   const { mission } = useMissionById(missionId);
 
   const { start, startedAttempt } = useStartMission();
-  const { finish } = useFinishMission();
+  const { finish, endedAttempt } = useFinishMission();
 
   const [hasStarted, setHasStarted] = useState(false);
+  const [hasFinished, setHasFinished] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState<AttemptFinishRequest>(
     [],
   );
@@ -32,11 +33,16 @@ export default function Planets() {
   const handleStartAttempt = async () => {
     await start({ missionId });
     setHasStarted(true);
+    setHasFinished(false);
   };
 
   const handleFinishAttempt = async () => {
     await finish(Number(startedAttempt?.id), selectedAnswers);
     setHasStarted(false);
+    setHasFinished(true);
+  };
+
+  const handleBackMenu = () => {
     router.replace(`/planets/${mission?.planet.id}`);
   };
 
@@ -65,23 +71,74 @@ export default function Planets() {
         />
         <View style={styles.missionContainer}>
           {!hasStarted ? (
-            <>
-              <View style={styles.missionContentContainer}>
-                <View>
-                  <Text>{mission?.name}</Text>
-                  <Text>{mission?.description}</Text>
+            !hasFinished ? (
+              <>
+                <View style={styles.missionContentContainer}>
+                  <View>
+                    <Text>{mission?.name}</Text>
+                    <Text>{mission?.description}</Text>
+                  </View>
+                  <Text>{mission?.content}</Text>
                 </View>
-                <Text>{mission?.content}</Text>
-              </View>
-              <View>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={handleStartAttempt}
-                >
-                  <Text>Iniciar Tentativa</Text>
-                </TouchableOpacity>
-              </View>
-            </>
+                <View>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleStartAttempt}
+                  >
+                    <Text>Iniciar Tentativa</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : (
+              <>
+                <View style={styles.missionContentContainer}>
+                  <View>
+                    <Text>{mission?.name}</Text>
+                    <Text>{mission?.description}</Text>
+                  </View>
+                  {endedAttempt?.answers?.map((answer) => {
+                    return (
+                      <View>
+                        <View>
+                          <Text>{answer.order}:{answer.question.content}</Text>
+                        </View>
+                        <View>
+                          <Text>{answer.selection.content}</Text>
+                        </View>
+                        <View>
+                          <Text>{answer.correct?.content}</Text>
+                        </View>
+                        <View>
+                          <Text>{answer.correct?.content}</Text>
+                        </View>
+                      </View>
+                    );
+                  })}
+                  <View>
+                    <Text>{endedAttempt?.result}</Text>
+                  </View>
+                </View>
+                <View style={styles.buttonContainer}>
+                  <View style={styles.buttonWrapper}>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={handleBackMenu}
+                    >
+                      <Text>Voltar</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.buttonWrapper}>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={handleStartAttempt}
+                    >
+                      <Text>Tentar novamente</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </>
+            )
           ) : (
             <>
               <Text>--- Lista de Questões ---</Text>
@@ -219,6 +276,17 @@ const styles = StyleSheet.create({
 
   selected: {
     backgroundColor: "rgba(0,0,0,0.1)",
+  },
+
+  buttonContainer: {
+    width: "100%",
+    maxWidth: 600,
+    flexDirection: "row",
+    gap: 12,
+  },
+
+  buttonWrapper: {
+    flex: 1,
   },
 
   button: {

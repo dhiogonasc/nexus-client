@@ -291,7 +291,6 @@ export default function PlanetCarousel() {
         </View>
       </ImageBackground>
 
-      {/* Botão de explorar ou mensagem de bloqueio */}
       <TouchableOpacity
         style={{
           backgroundColor: displayColor,

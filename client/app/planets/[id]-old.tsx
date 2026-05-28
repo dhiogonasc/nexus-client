@@ -6,7 +6,7 @@ import PlanetStateScreen from "./components/PlanetStateScreen";
 import PlanetContent from "./components/PlanetContent";
 import { usePlanetById } from "@/hooks/planetHook";
 
-export default function Planet() {
+export default function Planets() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const { planet, loading, error } = usePlanetById(Number(id));
 
@@ -25,12 +25,4 @@ export default function Planet() {
       <PlanetStateScreen message={"Planeta não encontrado."} color="#406fd4" />
     );
   }
-
-  return (
-    <PlanetContent
-      planeta={planet}
-      missions={planet.missions}
-      progress={planet.progress}
-    />
-  );
 }

@@ -33,7 +33,7 @@ export function useLogin() {
       await storageService.saveToken(data.accessToken);
 
       setTimeout(() => {
-        router.replace("/home");
+        router.replace("/planets");
       }, 1500);
     } catch (err: any) {
       const status = err.response?.status;

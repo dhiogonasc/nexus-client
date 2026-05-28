@@ -53,7 +53,10 @@ export default function Planets() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <ScrollView
+      style={styles.mainScroll}
+      contentContainerStyle={styles.scrollContainer}
+    >
       <SafeAreaView style={[styles.container, { backgroundColor: "#fff" }]}>
         <StatusBar
           barStyle="light-content"
@@ -61,24 +64,24 @@ export default function Planets() {
           backgroundColor="transparent"
         />
         <View style={styles.missionContainer}>
-          <View style={styles.missionContentContainer}>
-            <View>
-              <Text>{mission?.name}</Text>
-              <Text>{mission?.description}</Text>
-            </View>
-            <Text>{mission?.content}</Text>
-          </View>
-
-          <Text>--- Lista de Questões ---</Text>
           {!hasStarted ? (
-            <View>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={handleStartAttempt}
-              >
-                <Text>Iniciar Tentativa</Text>
-              </TouchableOpacity>
-            </View>
+            <>
+              <View style={styles.missionContentContainer}>
+                <View>
+                  <Text>{mission?.name}</Text>
+                  <Text>{mission?.description}</Text>
+                </View>
+                <Text>{mission?.content}</Text>
+              </View>
+              <View>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handleStartAttempt}
+                >
+                  <Text>Iniciar Tentativa</Text>
+                </TouchableOpacity>
+              </View>
+            </>
           ) : (
             <>
               <Text>--- Lista de Questões ---</Text>
@@ -143,7 +146,12 @@ export default function Planets() {
 }
 
 const styles = StyleSheet.create({
+  mainScroll: {
+    flex: 1,
+  },
+
   scrollContainer: {
+    flexGrow: 1,
     width: "100%",
     alignItems: "center",
   },

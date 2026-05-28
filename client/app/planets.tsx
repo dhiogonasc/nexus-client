@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
+  ScrollView,
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -27,48 +28,64 @@ export default function Home() {
   const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: "#fff" }]}>
-      <StatusBar
-        barStyle="light-content"
-        translucent
-        backgroundColor="transparent"
-      />
-      <Text>--- Lista de Planetas ---</Text>
-      <View style={styles.planetContainer}>
-        <ProgressBar
-          completed={completed}
-          total={total}
-          percent={percent}
-        ></ProgressBar>
+    <ScrollView
+      style={styles.mainScroll}
+      contentContainerStyle={styles.scrollContainer}
+    >
+      {" "}
+      <SafeAreaView style={[styles.container, { backgroundColor: "#fff" }]}>
+        <StatusBar
+          barStyle="light-content"
+          translucent
+          backgroundColor="transparent"
+        />
+        <Text>--- Lista de Planetas ---</Text>
+        <View style={styles.planetContainer}>
+          <ProgressBar
+            completed={completed}
+            total={total}
+            percent={percent}
+          ></ProgressBar>
 
-        {planets?.tasks.map((planet) => {
-          const status = planet.execution?.status || "";
-          const isLocked = status === "LOCKED";
-          const borderColor = STATUS_BORDER_COLORS[status];
+          {planets?.tasks.map((planet) => {
+            const status = planet.execution?.status || "";
+            const isLocked = status === "LOCKED";
+            const borderColor = STATUS_BORDER_COLORS[status];
 
-          return (
-            <TouchableOpacity
-              style={[styles.planet, { borderColor }]}
-              key={planet.id}
-              disabled={isLocked}
-              onPress={() => router.push(`/planets/${planet.id}`)}
-            >
-              <View>
-                <Text>
-                  {formatPlanetName(planet.name)}{" "}
-                  {planet.execution?.isCurrent ? "(Atual)" : ""}
-                </Text>
-                <Text>{planet.description}</Text>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-    </SafeAreaView>
+            return (
+              <TouchableOpacity
+                style={[styles.planet, { borderColor }]}
+                key={planet.id}
+                disabled={isLocked}
+                onPress={() => router.push(`/planets/${planet.id}`)}
+              >
+                <View>
+                  <Text>
+                    {formatPlanetName(planet.name)}{" "}
+                    {planet.execution?.isCurrent ? "(Atual)" : ""}
+                  </Text>
+                  <Text>{planet.description}</Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  mainScroll: {
+    flex: 1,
+  },
+
+  scrollContainer: {
+    flexGrow: 1,
+    width: "100%",
+    alignItems: "center",
+  },
+
   container: {
     width: "100%",
     flex: 1,

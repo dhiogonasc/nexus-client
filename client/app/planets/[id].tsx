@@ -23,7 +23,10 @@ export default function Planets() {
   const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <ScrollView
+      style={styles.mainScroll}
+      contentContainerStyle={styles.scrollContainer}
+    >
       <SafeAreaView style={[styles.container, { backgroundColor: "#fff" }]}>
         <StatusBar
           barStyle="light-content"
@@ -77,11 +80,15 @@ export default function Planets() {
 }
 
 const styles = StyleSheet.create({
+  mainScroll: {
+    flex: 1,
+  },
+
   scrollContainer: {
+    flexGrow: 1,
     width: "100%",
     alignItems: "center",
   },
-
   container: {
     width: "100%",
     flex: 1,

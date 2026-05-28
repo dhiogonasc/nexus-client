@@ -13,45 +13,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import { CarouselStyles as S } from "@/styles/CarouselStyle";
 import { router } from "expo-router";
-
-import api from "@/services/api";
-import { formatPlanets } from "@/models/planet";
+import { useAllPlanets } from "@/hooks/planetHook";
 
 export default function PlanetCarousel() {
-  const [planets, setPlanets] = useState<any[]>([]);
-  const [carregando, setCarregando] = useState(true);
+  const { planets, loading, error } = useAllPlanets();
   const [erro, setErro] = useState<string | null>(null);
 
-  useEffect(() => {
-    const buscarPlanetas = async () => {
-      try {
-        setCarregando(true);
-        setErro(null);
-
-        const request = await api.get("/planets");
-        const response = request.data;
-
-        setPlanets(formatPlanets(response.tasks));
-      } catch (error: any) {
-        const status = error.response?.status;
-        if (status === 401) {
-          setErro("Sessão expirada ou token inválido. Faça login novamente.");
-        } else if (status === 404) {
-          setErro("Rota de planetas não encontrada no servidor.");
-        } else if (status === 500) {
-          setErro("Erro interno no servidor ao carregar planetas.");
-        } else {
-          setErro("Não foi possível carregar o mapa estelar.");
-        }
-      } finally {
-        setCarregando(false);
-      }
-    };
-
-    buscarPlanetas();
-  }, []);
-
-  if (carregando) {
+  if (loading) {
     return (
       <View
         style={[
@@ -71,7 +39,7 @@ export default function PlanetCarousel() {
     );
   }
 
-  if (erro || planets.length === 0) {
+  if (erro || planets?.tasks.length === 0) {
     return (
       <View
         style={[
@@ -105,17 +73,14 @@ export default function PlanetCarousel() {
 
   const useNativeDriver = Platform.OS !== "web";
 
-  const planet = planets[index];
+  const planet = planets?.tasks[index] || null;
 
-  const isLocked = planet.execution?.status === "LOCKED";
-  const displayColor = isLocked ? "#475569" : planet.accentColor;
-  const currentPlanetIndex = planets.findIndex(
-    (p) => p.execution.isCurrent === true,
-  );
+  const isLocked = planet?.execution.status === "LOCKED";
+  const displayColor = isLocked ? "#475569" : planet?.accentColor;
+  const currentPlanetIndex =
+    planets?.tasks.findIndex((p) => p.execution.isCurrent === true) || 0;
 
-  if (currentPlanetIndex !== -1) {
-    setIndex(currentPlanetIndex);
-  }
+  setIndex(currentPlanetIndex);
 
   const navegar = (alvo: "ant" | "prox" | number) => {
     if (isAnimating) return;
@@ -131,8 +96,9 @@ export default function PlanetCarousel() {
     } else {
       proximoIndex =
         alvo === "prox"
-          ? (index + 1) % planets.length
-          : (index - 1 + planets.length) % planets.length;
+          ? (index + 1) % (planets?.tasks.length || 0)
+          : (index - 1 + (planets?.tasks.length || 0)) %
+            (planets?.tasks.length || 0);
 
       direcaoAnimacao = alvo === "prox" ? -1 : 1;
     }
@@ -200,7 +166,7 @@ export default function PlanetCarousel() {
           ]}
         >
           <ImageBackground
-            source={planet.imagem}
+            source={planet?.image}
             style={[
               S.planetImage,
               isLocked && {
@@ -253,7 +219,7 @@ export default function PlanetCarousel() {
           <BlurView intensity={40} tint="dark" style={S.infoBlur}>
             <View style={[S.accentLine, { backgroundColor: displayColor }]} />
 
-            {planet.execution?.isCurrent && (
+            {planet?.execution.isCurrent && (
               <View
                 style={{
                   flexDirection: "row",
@@ -283,20 +249,20 @@ export default function PlanetCarousel() {
             )}
 
             <Text style={[S.planetName, isLocked && { color: "#94A3B8" }]}>
-              {planet.name}
+              {planet?.name}
             </Text>
 
             <View style={S.infoRow}>
               <View style={S.infoPill}>
                 <MaterialCommunityIcons name="atom" size={12} color="#94A3B8" />
-                <Text style={S.infoPillText}>{planet.description}</Text>
+                <Text style={S.infoPillText}>{planet?.description}</Text>
               </View>
             </View>
           </BlurView>
         </Animated.View>
 
         <View style={S.dots}>
-          {planets.map((p, i) => (
+          {planets?.tasks.map((p, i) => (
             <TouchableOpacity
               key={p.id || i}
               onPress={() => {
@@ -335,7 +301,7 @@ export default function PlanetCarousel() {
           marginRight: "auto",
         }}
         disabled={isLocked}
-        onPress={() => router.push(`/planet/${planet.id}`)}
+        onPress={() => router.push(`/planet/${planet?.id}`)}
       >
         <Text
           style={{
@@ -343,7 +309,9 @@ export default function PlanetCarousel() {
             fontWeight: "bold",
           }}
         >
-          {isLocked ? "Complete o planeta anterior" : `Explorar ${planet.name}`}
+          {isLocked
+            ? "Complete o planeta anterior"
+            : `Explorar ${planet?.name}`}
         </Text>
       </TouchableOpacity>
     </View>

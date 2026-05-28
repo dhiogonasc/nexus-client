@@ -1,4 +1,5 @@
-import { Task, TaskExecution, TaskPayload } from "./task";
+import { ImageSourcePropType } from "react-native";
+import { Task, TaskExecution, TaskPayload, TaskProgress } from "./task";
 
 export interface Planet {
   id: number;
@@ -12,7 +13,7 @@ export interface Planet {
 }
 
 interface UIResource {
-  image: string;
+  image: ImageSourcePropType;
   accentColor: string;
 }
 
@@ -35,13 +36,28 @@ export const PLANETS: Record<number, UIResource> = {
   },
 };
 
-export function formatPlanets(planets: Task[]) {
-  return planets.map((planet) => {
-    const resource = PLANETS[planet.order];
+export interface FormatedPlanetTask extends Task, UIResource {}
+
+export interface FormatedTaskPayload {
+  tasks: FormatedPlanetTask[];
+  progress: TaskProgress;
+}
+
+export function formatPlanets(planets: TaskPayload): FormatedTaskPayload {
+  const planetsTasks = planets.tasks;
+  const planetsProgress = planets.progress;
+  const formatedPlanets: FormatedPlanetTask[] = planetsTasks.map((task) => {
+    const resource = PLANETS[task.order];
+
     return {
-      ...planet,
-      imagem: resource?.image,
+      ...task,
+      image: resource?.image,
       accentColor: resource?.accentColor || "#3B82F6",
     };
   });
+
+  return {
+    tasks: formatedPlanets,
+    progress: planetsProgress,
+  };
 }

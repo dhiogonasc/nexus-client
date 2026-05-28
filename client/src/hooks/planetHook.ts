@@ -1,10 +1,13 @@
-import { TaskPayload } from "@/models/task";
-import { Planet } from "@/models/planet";
+import {
+  FormatedTaskPayload,
+  formatPlanets,
+  Planet,
+} from "@/models/planet";
 import { planetService } from "@/services/planetService";
 import { useCallback, useEffect, useState } from "react";
 
 export function useAllPlanets() {
-  const [planets, setPlanets] = useState<TaskPayload | null>(null);
+  const [planets, setPlanets] = useState<FormatedTaskPayload | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,7 +17,7 @@ export function useAllPlanets() {
 
     try {
       const data = await planetService.getAll();
-      setPlanets(data);
+      setPlanets(formatPlanets(data));
     } catch {
       setError("Nenhum planeta encontrado!");
     } finally {

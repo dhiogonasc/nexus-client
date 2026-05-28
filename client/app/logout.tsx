@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-import { handleLogout } from '../src/services/serviçoLogout'; 
+import { handleLogout } from '../src/services/logoutService'; 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function LogoutScreen() {

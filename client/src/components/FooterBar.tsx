@@ -3,7 +3,7 @@ import { Text, View, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from '@/styles/FooterBarStyle';
-import { handleLogout } from '../services/serviçoLogout';
+import { handleLogout } from '../services/logoutService';
 import { router } from 'expo-router';
 import { useRouter, usePathname } from 'expo-router';
 

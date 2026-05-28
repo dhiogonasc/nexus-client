@@ -19,6 +19,10 @@ export interface AnswerResult {
   explanation: string;
 }
 
+export interface AttemptStartRequest {
+  missionId: number;
+}
+
 export type AttemptFinishRequest = Answer[];
 
 export interface AttemptResponse {

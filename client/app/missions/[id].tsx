@@ -20,6 +20,7 @@ export default function Planets() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const missionId = Number(id);
   const { mission } = useMissionById(missionId);
+
   const { start, startedAttempt } = useStartMission();
   const { finish } = useFinishMission();
 
@@ -29,7 +30,7 @@ export default function Planets() {
   );
 
   const handleStartAttempt = async () => {
-    await start(missionId);
+    await start({ missionId });
     setHasStarted(true);
   };
 

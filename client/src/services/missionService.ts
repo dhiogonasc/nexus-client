@@ -1,6 +1,10 @@
 import { Mission } from "@/models/mission";
 import { api } from "./api";
-import { AttemptFinishRequest, AttemptResponse } from "@/models/attempt";
+import {
+  AttemptFinishRequest,
+  AttemptResponse,
+  AttemptStartRequest,
+} from "@/models/attempt";
 
 export const missionService = {
   getById: async (id: number): Promise<Mission> => {
@@ -8,16 +12,10 @@ export const missionService = {
     return request.data;
   },
 
-  startAttempt: async (missionId: number): Promise<AttemptResponse> => {
-    const request = await api.post(
-      "/attempts",
-      { missionId },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
-    );
+  startAttempt: async (
+    missionId: AttemptStartRequest,
+  ): Promise<AttemptResponse> => {
+    const request = await api.post("/attempts", missionId);
     return request.data;
   },
 

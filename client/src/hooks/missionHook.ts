@@ -1,4 +1,8 @@
-import { AttemptFinishRequest, AttemptResponse } from "@/models/attempt";
+import {
+  AttemptFinishRequest,
+  AttemptResponse,
+  AttemptStartRequest,
+} from "@/models/attempt";
 import { Mission } from "@/models/mission";
 import { missionService } from "@/services/missionService";
 import { useCallback, useEffect, useState } from "react";
@@ -36,7 +40,7 @@ export function useStartMission() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const start = useCallback(async (missionId: number) => {
+  const start = useCallback(async (missionId: AttemptStartRequest) => {
     setLoading(true);
     setError(null);
 

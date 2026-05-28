@@ -4,9 +4,9 @@ import { StyleSheet, Text, View } from "react-native";
 interface Props {
   completed: number;
   total: number;
-  percent: number;
 }
-export function ProgressBar({ completed, total, percent }: Props) {
+export function ProgressBar({ completed, total }: Props) {
+  const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
   return (
     <View style={styles.progressContainer}>
       <View style={styles.progressHeader}>

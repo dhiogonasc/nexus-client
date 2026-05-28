@@ -25,7 +25,6 @@ export default function Home() {
 
   const completed = planets?.progress?.completed || 0;
   const total = planets?.progress?.total || 0;
-  const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
 
   return (
     <ScrollView
@@ -44,7 +43,6 @@ export default function Home() {
           <ProgressBar
             completed={completed}
             total={total}
-            percent={percent}
           ></ProgressBar>
 
           {planets?.tasks.map((planet) => {

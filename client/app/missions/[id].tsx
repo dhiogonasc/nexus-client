@@ -15,6 +15,7 @@ import {
 } from "@/hooks/missionHook";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AttemptFinishRequest } from "@/models/attempt";
+import { ProgressBar } from "@/components/ProgressBar";
 
 export default function Planets() {
   const { id } = useLocalSearchParams<{ id?: string }>();
@@ -58,6 +59,14 @@ export default function Planets() {
     });
   };
 
+  const getCorrect = () => {
+    return endedAttempt?.answers?.filter((answer) => answer.hit).length;
+  };
+
+  const getTotal = () => {
+    return endedAttempt?.answers?.length;
+  };
+
   return (
     <ScrollView
       style={styles.mainScroll}
@@ -96,27 +105,54 @@ export default function Planets() {
                     <Text>{mission?.name}</Text>
                     <Text>{mission?.description}</Text>
                   </View>
+                  <ProgressBar
+                    completed={getCorrect() || 0}
+                    total={getTotal() || 0}
+                  ></ProgressBar>
                   {endedAttempt?.answers?.map((answer) => {
                     return (
-                      <View>
-                        <View>
-                          <Text>{answer.order}:{answer.question.content}</Text>
+                      <React.Fragment key={answer.question.id}>
+                        <View
+                          style={[
+                            styles.questionContainer,
+                            answer.hit
+                              ? styles.correctQuestion
+                              : styles.wrongQuestion,
+                          ]}
+                        >
+                          <View>
+                            <Text>
+                              {answer.order}: {answer.question.content}
+                            </Text>
+                          </View>
+
+                          <View style={styles.alternativeContainer}>
+                            {answer.hit ? (
+                              <Text
+                                style={[styles.alternative, styles.correct]}
+                              >
+                                {answer.selection.content}
+                              </Text>
+                            ) : (
+                              <>
+                                <Text
+                                  style={[styles.alternative, styles.wrong]}
+                                >
+                                  {answer.selection.content}
+                                </Text>
+                                <Text
+                                  style={[styles.alternative, styles.correct]}
+                                >
+                                  {answer.correct?.content}
+                                </Text>
+                              </>
+                            )}
+                            <Text>{answer.explanation}</Text>
+                          </View>
                         </View>
-                        <View>
-                          <Text>{answer.selection.content}</Text>
-                        </View>
-                        <View>
-                          <Text>{answer.correct?.content}</Text>
-                        </View>
-                        <View>
-                          <Text>{answer.correct?.content}</Text>
-                        </View>
-                      </View>
+                      </React.Fragment>
                     );
                   })}
-                  <View>
-                    <Text>{endedAttempt?.result}</Text>
-                  </View>
                 </View>
                 <View style={styles.buttonContainer}>
                   <View style={styles.buttonWrapper}>
@@ -253,6 +289,14 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
 
+  correctQuestion: {
+    borderColor: "rgba(34, 197, 94, 0.8)",
+  },
+
+  wrongQuestion: {
+    borderColor: "rgba(239, 68, 68, 0.4)",
+  },
+
   mission: {
     width: "100%",
     padding: 12,
@@ -277,6 +321,9 @@ const styles = StyleSheet.create({
   selected: {
     backgroundColor: "rgba(0,0,0,0.1)",
   },
+
+  correct: { backgroundColor: "rgba(34, 197, 94, 0.8)" },
+  wrong: { backgroundColor: "rgba(239, 68, 68, 0.4)" },
 
   buttonContainer: {
     width: "100%",
